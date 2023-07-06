@@ -1,0 +1,3 @@
+# Chess Engine, in progress...
+
+Based on [React-ts-chess](https://github.com/ArtyomSukiasyan/react-ts-chess) and [React-chess](https://github.com/ArtyomSukiasyan/React-Chess)
