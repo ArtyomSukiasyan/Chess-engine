@@ -1,25 +1,21 @@
 import React from "react";
 import "./App.css";
-import Collected from "./components/Collection";
 import MatchInfo from "./components/MatchInfo";
 import Square from "./components/Square";
 import { colNumbers, rowNumbers } from "./constants/colNumbersAndRowNumbers";
 import calcSquareColor from "./helpers/calcSquareColor";
-import checkmate from "./helpers/checkmate";
 import clearCheckHighlight from "./helpers/clearCheckHighlight";
 import clearHighlight from "./helpers/clearHighlight";
 import clearPossibleHighlight from "./helpers/clearPossibleHighlight";
-import highlightMate from "./helpers/highlightMate";
+import getMoveConditions from "./helpers/getMoveConditions";
 import inCheck from "./helpers/inCheck";
 import initializeBoard from "./helpers/initializeBoard";
 import isMoveAvailable from "./helpers/isMoveAvailable";
 import makeMove from "./helpers/makeMove";
 import minimax from "./helpers/minimax";
 import shuffle from "./helpers/shuffle";
-import stalemate from "./helpers/stalemate";
 import { ICastlingConditions } from "./models/CastlingConditions";
 import { IPiece } from "./models/Piece";
-import FillerPiece from "./pieces/FillerPiece";
 
 type MyComponentState = {
   squares: IPiece[];
@@ -162,107 +158,16 @@ export default class Board extends React.Component<{}, MyComponentState> {
       }
     }
 
-    const collection =
-      player === "w"
-        ? this.state.piecesCollectedByWhite.slice()
-        : this.state.piecesCollectedByBlack.slice();
-
-    if (squares[end].ascii !== null) {
-      collection.push(<Collected value={squares[end]} />);
-    }
-
-    if (squares[start].ascii === (player === "w" ? "p" : "P")) {
-      if (end - start === (player === "w" ? -9 : 7)) {
-        if (start - 1 === this.state.passantPos) {
-          collection.push(<Collected value={squares[start - 1]} />);
-          squares[start - 1] = new FillerPiece(null);
-        }
-      } else if (end - start === (player === "w" ? -7 : 9)) {
-        if (start + 1 === this.state.passantPos) {
-          collection.push(<Collected value={squares[start + 1]} />);
-          squares[start + 1] = new FillerPiece(null);
-        }
-      }
-    }
-
-    squares = makeMove(squares, start, end, this.state.passantPos);
-
-    const passant_true =
-      player === "w"
-        ? squares[end].ascii === "p" &&
-          start >= 48 &&
-          start <= 55 &&
-          end - start === -16
-        : squares[end].ascii === "P" &&
-          start >= 8 &&
-          start <= 15 &&
-          end - start === 16;
-    const passant = passant_true ? end : 65;
-
-    if (player === "w") {
-      squares = highlightMate(
-        "b",
-        squares,
-        checkmate(
-          "b",
-          squares,
-          this.state.passantPos,
-          this.state.castlingConditions
-        ),
-        stalemate(
-          "b",
-          squares,
-          this.state.passantPos,
-          this.state.castlingConditions
-        )
-      ).slice();
-    } else {
-      squares = highlightMate(
-        "w",
-        squares,
-        checkmate(
-          "w",
-          squares,
-          this.state.passantPos,
-          this.state.castlingConditions
-        ),
-        stalemate(
-          "w",
-          squares,
-          this.state.passantPos,
-          this.state.castlingConditions
-        )
-      ).slice();
-    }
-
-    let checkMated =
-      checkmate(
-        "w",
-        squares,
-        this.state.passantPos,
-        this.state.castlingConditions
-      ) ||
-      checkmate(
-        "b",
-        squares,
-        this.state.passantPos,
-        this.state.castlingConditions
-      );
-    let staleMated =
-      (stalemate(
-        "w",
-        squares,
-        this.state.passantPos,
-        this.state.castlingConditions
-      ) &&
-        player === "b") ||
-      (stalemate(
-        "b",
-        squares,
-        this.state.passantPos,
-        this.state.castlingConditions
-      ) &&
-        player === "w");
+    const { checkMated, passant, staleMated, collection } = getMoveConditions(
+      player,
+      this.state.piecesCollectedByWhite,
+      this.state.piecesCollectedByBlack,
+      squares,
+      start,
+      end,
+      this.state.passantPos,
+      this.state.castlingConditions
+    );
 
     this.setState({
       passantPos: passant,
