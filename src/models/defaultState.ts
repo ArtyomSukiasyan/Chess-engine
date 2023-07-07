@@ -5,7 +5,6 @@ export type defaultState = {
   squares: IPiece[];
   source: number;
   turn: string;
-  trueTurn: string;
   turnNum: number;
   firstPos: number | null;
   secondPos: number | null;

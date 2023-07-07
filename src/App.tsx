@@ -23,7 +23,6 @@ export default class Game extends React.Component<{}, defaultState> {
       squares: initializeBoard(),
       source: -1,
       turn: "w",
-      trueTurn: "w",
       turnNum: 0,
       firstPos: null,
       secondPos: null,
@@ -53,7 +52,6 @@ export default class Game extends React.Component<{}, defaultState> {
       squares: initializeBoard(),
       source: -1,
       turn: "w",
-      trueTurn: "w",
       turnNum: 0,
       firstPos: null,
       secondPos: null,
@@ -106,7 +104,6 @@ export default class Game extends React.Component<{}, defaultState> {
       turnNum: this.state.turnNum + 1,
       mated: checkMated || staleMated,
       turn: player === "b" ? "w" : "b",
-      trueTurn: player === "b" ? "w" : "b",
       isBotRunning: player !== "b",
     });
 
