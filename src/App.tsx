@@ -1,6 +1,7 @@
 import React from "react";
 import "./App.css";
 import Collected from "./components/Collection";
+import MateWrapper from "./components/MateWrapper";
 import Square from "./components/Square";
 import { colNumbers, rowNumbers } from "./constants/colNumbersAndRowNumbers";
 import calcSquareColor from "./helpers/calcSquareColor";
@@ -597,80 +598,12 @@ export default class Board extends React.Component<{}, MyComponentState> {
               </button>
             </div>
 
-            <div className="mate_wrapper">
-              <p className="small_font">
-                {inCheck(
-                  "w",
-                  this.state.squares,
-                  this.state.passantPos,
-                  this.state.castlingConditions
-                ) &&
-                !checkmate(
-                  "w",
-                  this.state.squares,
-                  this.state.passantPos,
-                  this.state.castlingConditions
-                )
-                  ? "You are in check!"
-                  : ""}
-              </p>
-              <p className="small_font">
-                {inCheck(
-                  "b",
-                  this.state.squares,
-                  this.state.passantPos,
-                  this.state.castlingConditions
-                ) &&
-                !checkmate(
-                  "b",
-                  this.state.squares,
-                  this.state.passantPos,
-                  this.state.castlingConditions
-                )
-                  ? "Black player is in check."
-                  : ""}
-              </p>
-              <p className="small_font">
-                {checkmate(
-                  "w",
-                  this.state.squares,
-                  this.state.passantPos,
-                  this.state.castlingConditions
-                )
-                  ? "You lost by checkmate."
-                  : ""}
-              </p>
-              <p className="small_font">
-                {checkmate(
-                  "b",
-                  this.state.squares,
-                  this.state.passantPos,
-                  this.state.castlingConditions
-                )
-                  ? "You won by checkmate!"
-                  : ""}
-              </p>
-              <p className="small_font">
-                {stalemate(
-                  "w",
-                  this.state.squares,
-                  this.state.passantPos,
-                  this.state.castlingConditions
-                ) && this.state.turn === "w"
-                  ? "You are in stalemate. Game over."
-                  : ""}
-              </p>
-              <p className="small_font">
-                {stalemate(
-                  "b",
-                  this.state.squares,
-                  this.state.passantPos,
-                  this.state.castlingConditions
-                ) && this.state.turn === "b"
-                  ? "Black is in stalemate. Game over."
-                  : ""}
-              </p>
-            </div>
+            <MateWrapper
+              pieces={this.state.squares}
+              castlingConditions={this.state.castlingConditions}
+              passantPos={this.state.passantPos}
+              turn={this.state.turn}
+            />
           </div>
         </div>
 
