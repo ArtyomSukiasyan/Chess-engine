@@ -14,11 +14,12 @@ import paintCheck from "./helpers/paintCheck";
 import Board from "./components/Board";
 import { defaultCastlingConditions } from "./constants/castlingConditions";
 import LeftScreen from "./components/LeftScreen";
+import { EPlayer } from "./models/enums/Player.enum";
 
 const Game: React.FC = () => {
   const [pieces, setPieces] = useState<IPiece[]>(initializeBoard());
   const [source, setSource] = useState<number>(-1);
-  const [turn, setTurn] = useState<string>("w");
+  const [turn, setTurn] = useState<string>(EPlayer.white);
   const [firstPos, setFirstPos] = useState<number>(-1);
   const [secondPos, setSecondPos] = useState<number>(-1);
   const [repetition, setRepetition] = useState<number>(0);
@@ -38,7 +39,7 @@ const Game: React.FC = () => {
   const reset = () => {
     setPieces(initializeBoard());
     setSource(-1);
-    setTurn("w");
+    setTurn(EPlayer.white);
     setFirstPos(-1);
     setSecondPos(-1);
     setRepetition(0);
@@ -82,10 +83,10 @@ const Game: React.FC = () => {
     setPieces(updatedSquares);
     setSource(-1);
     setMated(checkMated || staleMated);
-    setTurn(player === "b" ? "w" : "b");
-    setIsBotRunning(player !== "b");
+    setTurn(player === EPlayer.black ? EPlayer.white : EPlayer.black);
+    setIsBotRunning(player !== EPlayer.black);
 
-    if (player === "b") {
+    if (player === EPlayer.black) {
       setFirstPos(start);
       setSecondPos(end);
       setPiecesCollectedByBlack(collection);
@@ -119,7 +120,7 @@ const Game: React.FC = () => {
     );
 
     setRepetition(newRepetition);
-    executeMove("b", squares, randStart, randEnd);
+    executeMove(EPlayer.black, squares, randStart, randEnd);
   };
 
   const handleClick = (idx: number) => {
@@ -186,7 +187,7 @@ const Game: React.FC = () => {
           return;
         }
 
-        executeMove("w", pieces, source, idx);
+        executeMove(EPlayer.white, pieces, source, idx);
 
         const searchDepth = 3;
         setTimeout(() => {

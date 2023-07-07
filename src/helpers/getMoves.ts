@@ -1,4 +1,5 @@
 import { ICastlingConditions } from "../models/CastlingConditions";
+import { EPlayer } from "../models/enums/Player.enum";
 import { IPiece } from "../models/Piece";
 import isMoveAvailable from "./isMoveAvailable";
 import shuffle from "./shuffle";
@@ -23,7 +24,7 @@ export default function getMoves(
   for (let i = 0; i < 64; i++) {
     let start = starts[i];
     let isBlackPiece =
-      pieces[start].ascii !== null && pieces[start].player === "b";
+      pieces[start].ascii !== null && pieces[start].player === EPlayer.black;
     if (isBlackPiece) {
       for (let j = 0; j < 64; j++) {
         let end = ends[j];

@@ -1,4 +1,5 @@
 import { ICastlingConditions } from "../models/CastlingConditions";
+import { EPlayer } from "../models/enums/Player.enum";
 import { IPiece } from "../models/Piece";
 import FillerPiece from "../pieces/FillerPiece";
 import Queen from "../pieces/Queen";
@@ -36,7 +37,7 @@ export default function isMoveAvailable(
   }
 
   const cantCastle =
-    pieces[start].ascii === (player === "w" ? "k" : "K") &&
+    pieces[start].ascii === (player === EPlayer.white ? "k" : "K") &&
     Math.abs(end - start) === 2 &&
     inCheck(player as string, pieces, statePassantPos, castlingConditions);
 
@@ -45,7 +46,7 @@ export default function isMoveAvailable(
   }
 
   if (
-    pieces[start].ascii === (player === "w" ? "k" : "K") &&
+    pieces[start].ascii === (player === EPlayer.white ? "k" : "K") &&
     Math.abs(end - start) === 2
   ) {
     const deltaPos = end - start;
@@ -68,9 +69,9 @@ export default function isMoveAvailable(
   checkSquares[start] = new FillerPiece(null);
 
   if (checkSquares[end].ascii === "p" && end >= 0 && end <= 7) {
-    checkSquares[end] = new Queen("w");
+    checkSquares[end] = new Queen(EPlayer.white);
   } else if (checkSquares[end].ascii === "P" && end >= 56 && end <= 63) {
-    checkSquares[end] = new Queen("b");
+    checkSquares[end] = new Queen(EPlayer.black);
   }
   if (
     inCheck(player as string, checkSquares, statePassantPos, castlingConditions)

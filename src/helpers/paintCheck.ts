@@ -1,4 +1,5 @@
 import { ICastlingConditions } from "../models/CastlingConditions";
+import { EPlayer } from "../models/enums/Player.enum";
 import { IPiece } from "../models/Piece";
 import clearPossibleHighlight from "./clearPossibleHighlight";
 import inCheck from "./inCheck";
@@ -13,7 +14,7 @@ export default function paintCheck(
   pieces[source].highlight = false;
   pieces = clearPossibleHighlight(pieces);
 
-  const isWhiteInCheck = inCheck("w", pieces, passantPos, castlingConditions);
+  const isWhiteInCheck = inCheck(EPlayer.white, pieces, passantPos, castlingConditions);
 
   if (idx !== source && isWhiteInCheck) {
     for (let j = 0; j < 64; j++) {

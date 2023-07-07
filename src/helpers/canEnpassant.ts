@@ -1,3 +1,4 @@
+import { EPlayer } from "../models/enums/Player.enum";
 import { IPiece } from "../models/Piece";
 
 export default function canEnpassant(
@@ -16,11 +17,11 @@ export default function canEnpassant(
   let colDiff = endCol - startCol;
 
   if (rowDiff === 2 || rowDiff === -2) {
-    if (pieces[start].player === "w" && (start < 48 || start > 55)) {
+    if (pieces[start].player === EPlayer.white && (start < 48 || start > 55)) {
       return false;
     }
 
-    if (pieces[start].player === "b" && (start < 8 || start > 15)) {
+    if (pieces[start].player === EPlayer.black && (start < 8 || start > 15)) {
       return false;
     }
   }

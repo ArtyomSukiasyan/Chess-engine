@@ -1,3 +1,4 @@
+import { EPlayer } from "../models/enums/Player.enum";
 import { IMatchInfo } from "../models/MatchInfo";
 import MateWrapper from "./MateWrapper";
 
@@ -30,12 +31,12 @@ export default function MatchInfo({
         </div>
       </div>
       <div className="wrapper">
-        {turn === "w" ? (
+        {turn === EPlayer.white ? (
           <div className="highlight_box"></div>
         ) : (
           <div className="highlight_box transparent"></div>
         )}
-        {turn === "b" ? (
+        {turn === EPlayer.black ? (
           <div className="highlight_box"></div>
         ) : (
           <div className="highlight_box transparent"></div>

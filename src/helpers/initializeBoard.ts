@@ -1,3 +1,4 @@
+import { EPlayer } from "../models/enums/Player.enum";
 import Bishop from "../pieces/Bishop";
 import FillerPiece from "../pieces/FillerPiece";
 import King from "../pieces/King";
@@ -10,29 +11,29 @@ export default function initializeBoard() {
   const squares = Array(64).fill(null);
 
   for (let i = 8; i < 16; i++) {
-    squares[i] = new Pawn("b");
+    squares[i] = new Pawn(EPlayer.black);
   }
 
   for (let i = 8 * 6; i < 8 * 6 + 8; i++) {
-    squares[i] = new Pawn("w");
+    squares[i] = new Pawn(EPlayer.white);
   }
 
-  squares[1] = new Knight("b");
-  squares[6] = new Knight("b");
-  squares[56 + 1] = new Knight("w");
-  squares[56 + 6] = new Knight("w");
-  squares[2] = new Bishop("b");
-  squares[5] = new Bishop("b");
-  squares[56 + 2] = new Bishop("w");
-  squares[56 + 5] = new Bishop("w");
-  squares[0] = new Rook("b");
-  squares[7] = new Rook("b");
-  squares[56 + 0] = new Rook("w");
-  squares[56 + 7] = new Rook("w");
-  squares[3] = new Queen("b");
-  squares[4] = new King("b");
-  squares[56 + 3] = new Queen("w");
-  squares[56 + 4] = new King("w");
+  squares[1] = new Knight(EPlayer.black);
+  squares[6] = new Knight(EPlayer.black);
+  squares[56 + 1] = new Knight(EPlayer.white);
+  squares[56 + 6] = new Knight(EPlayer.white);
+  squares[2] = new Bishop(EPlayer.black);
+  squares[5] = new Bishop(EPlayer.black);
+  squares[56 + 2] = new Bishop(EPlayer.white);
+  squares[56 + 5] = new Bishop(EPlayer.white);
+  squares[0] = new Rook(EPlayer.black);
+  squares[7] = new Rook(EPlayer.black);
+  squares[56 + 0] = new Rook(EPlayer.white);
+  squares[56 + 7] = new Rook(EPlayer.white);
+  squares[3] = new Queen(EPlayer.black);
+  squares[4] = new King(EPlayer.black);
+  squares[56 + 3] = new Queen(EPlayer.white);
+  squares[56 + 4] = new King(EPlayer.white);
 
   for (let i = 0; i < 64; i++) {
     if (squares[i] === null) {

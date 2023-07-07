@@ -1,3 +1,4 @@
+import { EPlayer } from "../models/enums/Player.enum";
 import { IPiece } from "../models/Piece";
 import FillerPiece from "../pieces/FillerPiece";
 import Queen from "../pieces/Queen";
@@ -41,11 +42,11 @@ export default function makeMove(
   pieces[start].highlight = true;
 
   if (pieces[end].ascii === "p" && end >= 0 && end <= 7) {
-    pieces[end] = new Queen("w");
+    pieces[end] = new Queen(EPlayer.white);
     pieces[end].highlight = true;
   }
   if (pieces[end].ascii === "P" && end >= 56 && end <= 63) {
-    pieces[end] = new Queen("b");
+    pieces[end] = new Queen(EPlayer.black);
     pieces[end].highlight = true;
   }
 

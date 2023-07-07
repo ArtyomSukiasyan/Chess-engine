@@ -1,4 +1,5 @@
 import { ReactElement } from "react";
+import { EPlayer } from "../models/enums/Player.enum";
 
 export default class King {
   player: string;
@@ -17,10 +18,10 @@ export default class King {
     this.inCheck = false;
     this.icon = (
       <span className="piece">
-        {player === "w" ? String.fromCharCode(9812) : String.fromCharCode(9818)}
+        {player === EPlayer.white ? String.fromCharCode(9812) : String.fromCharCode(9818)}
       </span>
     );
-    this.ascii = player === "w" ? "k" : "K";
+    this.ascii = player === EPlayer.white ? "k" : "K";
   }
 
   canMove(start: number, end: number) {

@@ -1,4 +1,5 @@
 import { ReactElement } from "react";
+import { EPlayer } from "../models/enums/Player.enum";
 
 export default class Pawn {
   player: string;
@@ -13,10 +14,10 @@ export default class Pawn {
     this.possible = false;
     this.icon = (
       <span className="piece">
-        {player === "w" ? String.fromCharCode(9817) : String.fromCharCode(9823)}
+        {player === EPlayer.white ? String.fromCharCode(9817) : String.fromCharCode(9823)}
       </span>
     );
-    this.ascii = player === "w" ? "p" : "P";
+    this.ascii = player === EPlayer.white ? "p" : "P";
   }
 
   canMove(start: number, end: number) {
@@ -28,7 +29,7 @@ export default class Pawn {
     const rowDiff = endRow - startRow;
     const colDiff = endCol - startCol;
 
-    if (this.player === "w") {
+    if (this.player === EPlayer.white) {
       if (colDiff === 0) {
         return rowDiff === 1 || rowDiff === 2;
       } else if (colDiff === -1 || colDiff === 1) {

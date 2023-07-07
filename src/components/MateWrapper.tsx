@@ -1,6 +1,7 @@
 import checkmate from "../helpers/checkmate";
 import inCheck from "../helpers/inCheck";
 import stalemate from "../helpers/stalemate";
+import { EPlayer } from "../models/enums/Player.enum";
 import { IMateWrapper } from "../models/MateWrapper";
 
 export default function MateWrapper({
@@ -12,34 +13,34 @@ export default function MateWrapper({
   return (
     <div className="mate_wrapper">
       <p className="small_font">
-        {inCheck("w", pieces, passantPos, castlingConditions) &&
-        checkmate("w", pieces, passantPos, castlingConditions)
+        {inCheck(EPlayer.white, pieces, passantPos, castlingConditions) &&
+        checkmate(EPlayer.white, pieces, passantPos, castlingConditions)
           ? "You are in check!"
           : ""}
       </p>
       <p className="small_font">
-        {inCheck("b", pieces, passantPos, castlingConditions) &&
-        !checkmate("b", pieces, passantPos, castlingConditions)
+        {inCheck(EPlayer.black, pieces, passantPos, castlingConditions) &&
+        !checkmate(EPlayer.black, pieces, passantPos, castlingConditions)
           ? "Black player is in check."
           : ""}
       </p>
       <p className="small_font">
-        {checkmate("w", pieces, passantPos, castlingConditions)
+        {checkmate(EPlayer.white, pieces, passantPos, castlingConditions)
           ? "You lost by checkmate."
           : ""}
       </p>
       <p className="small_font">
-        {checkmate("b", pieces, passantPos, castlingConditions)
+        {checkmate(EPlayer.black, pieces, passantPos, castlingConditions)
           ? "You won by checkmate!"
           : ""}
       </p>
       <p className="small_font">
-        {stalemate("w", pieces, passantPos, castlingConditions) && turn === "w"
+        {stalemate(EPlayer.white, pieces, passantPos, castlingConditions) && turn === EPlayer.white
           ? "You are in stalemate. Game over."
           : ""}
       </p>
       <p className="small_font">
-        {stalemate("b", pieces, passantPos, castlingConditions) && turn === "b"
+        {stalemate(EPlayer.black, pieces, passantPos, castlingConditions) && turn === EPlayer.black
           ? "Black is in stalemate. Game over."
           : ""}
       </p>

@@ -1,3 +1,4 @@
+import { EPlayer } from "../models/enums/Player.enum";
 import { IPiece } from "../models/Piece";
 
 export default function highlightMate(
@@ -7,7 +8,7 @@ export default function highlightMate(
   staleMated: boolean
 ) {
   if (checkMated || staleMated) {
-    const playerASCII = player === "w" ? "k" : "K";
+    const playerASCII = player === EPlayer.white ? "k" : "K";
 
     for (let j = 0; j < 64; j++) {
       if (pieces[j].ascii === playerASCII) {

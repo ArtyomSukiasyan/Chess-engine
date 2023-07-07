@@ -1,4 +1,5 @@
 import { ICastlingConditions } from "../models/CastlingConditions";
+import { EPlayer } from "../models/enums/Player.enum";
 import { IPiece } from "../models/Piece";
 import evaluateBlack from "./evaluateBlack";
 import isMoveAvailable from "./isMoveAvailable";
@@ -27,7 +28,7 @@ export default function minimax(
     let start = starts[i];
     let isPlayerPiece =
       copySquares[start].ascii !== null &&
-      copySquares[start].player === (isBlackPlayer ? "b" : "w");
+      copySquares[start].player === (isBlackPlayer ? EPlayer.black : EPlayer.white);
 
     if (isPlayerPiece) {
       for (let j = 0; j < 64; j++) {

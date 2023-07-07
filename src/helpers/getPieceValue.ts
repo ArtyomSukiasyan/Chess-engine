@@ -7,6 +7,7 @@ import { knightEval } from "../constants/evaluates/knight";
 import { pawnEvalBlack, pawnEvalWhite } from "../constants/evaluates/pawn";
 import { evalQueen } from "../constants/evaluates/queen";
 import { rookEvalBlack, rookEvalWhite } from "../constants/evaluates/rook";
+import { EPlayer } from "../models/enums/Player.enum";
 import { IPiece } from "../models/Piece";
 
 export default function getPieceValue(piece: IPiece, position: number) {
@@ -52,5 +53,5 @@ export default function getPieceValue(piece: IPiece, position: number) {
       break;
   }
 
-  return piece.player === "b" ? pieceValue : -pieceValue;
+  return piece.player === EPlayer.black ? pieceValue : -pieceValue;
 }

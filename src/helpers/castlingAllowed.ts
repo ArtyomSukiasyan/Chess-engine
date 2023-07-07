@@ -1,4 +1,5 @@
 import { ICastlingConditions } from "../models/CastlingConditions";
+import { EPlayer } from "../models/enums/Player.enum";
 import { IPiece } from "../models/Piece";
 
 export default function castlingAllowed(
@@ -8,14 +9,14 @@ export default function castlingAllowed(
   castlingConditions: ICastlingConditions
 ): boolean {
   const player = pieces[startPosition].player;
-  const kingDefaultPosition = player === "w" ? 60 : 4;
+  const kingDefaultPosition = player === EPlayer.white ? 60 : 4;
 
   if (startPosition !== kingDefaultPosition) {
     return false;
   }
 
   const deltaPos = endPosition - startPosition;
-  const rookASCII = player === "w" ? "r" : "R";
+  const rookASCII = player === EPlayer.white ? "r" : "R";
 
   const kingASCII =
     deltaPos === 2
@@ -27,7 +28,7 @@ export default function castlingAllowed(
   }
 
   const isKingHasMoved =
-    player === "w"
+    player === EPlayer.white
       ? castlingConditions.whiteKingHasMoved
       : castlingConditions.blackKingHasMoved;
 
@@ -40,7 +41,7 @@ export default function castlingAllowed(
       ? castlingConditions.rightWhiteRookHasMoved
       : castlingConditions.leftWhiteRookHasMoved;
 
-  if (player === "w" && isWhiteRookHasMoved) {
+  if (player === EPlayer.white && isWhiteRookHasMoved) {
     return false;
   }
 

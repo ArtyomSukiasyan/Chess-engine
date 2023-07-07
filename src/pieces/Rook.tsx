@@ -1,4 +1,5 @@
 import { ReactElement } from "react";
+import { EPlayer } from "../models/enums/Player.enum";
 
 export default class Rook {
   player: string;
@@ -13,10 +14,10 @@ export default class Rook {
     this.possible = false;
     this.icon = (
       <span className="piece">
-        {player === "w" ? String.fromCharCode(9814) : String.fromCharCode(9820)}
+        {player === EPlayer.white ? String.fromCharCode(9814) : String.fromCharCode(9820)}
       </span>
     );
-    this.ascii = player === "w" ? "r" : "R";
+    this.ascii = player === EPlayer.white ? "r" : "R";
   }
 
   canMove(start: number, end: number) {

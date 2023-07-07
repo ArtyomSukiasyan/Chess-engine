@@ -1,5 +1,6 @@
 import Collected from "../components/Collection";
 import { ICastlingConditions } from "../models/CastlingConditions";
+import { EPlayer } from "../models/enums/Player.enum";
 import { IPiece } from "../models/Piece";
 import FillerPiece from "../pieces/FillerPiece";
 import checkmate from "./checkmate";
@@ -18,7 +19,7 @@ export default function getMoveConditions(
   castlingConditions: ICastlingConditions
 ) {
   const collection =
-    player === "w"
+    player === EPlayer.white
       ? piecesCollectedByWhite.slice()
       : piecesCollectedByBlack.slice();
 
@@ -26,13 +27,13 @@ export default function getMoveConditions(
     collection.push(<Collected value={pieces[end]} />);
   }
 
-  if (pieces[start].ascii === (player === "w" ? "p" : "P")) {
-    if (end - start === (player === "w" ? -9 : 7)) {
+  if (pieces[start].ascii === (player === EPlayer.white ? "p" : "P")) {
+    if (end - start === (player === EPlayer.white ? -9 : 7)) {
       if (start - 1 === passantPos) {
         collection.push(<Collected value={pieces[start - 1]} />);
         pieces[start - 1] = new FillerPiece(null);
       }
-    } else if (end - start === (player === "w" ? -7 : 9)) {
+    } else if (end - start === (player === EPlayer.white ? -7 : 9)) {
       if (start + 1 === passantPos) {
         collection.push(<Collected value={pieces[start + 1]} />);
         pieces[start + 1] = new FillerPiece(null);
@@ -43,7 +44,7 @@ export default function getMoveConditions(
   pieces = makeMove(pieces, start, end, passantPos);
 
   const passantTrue =
-    player === "w"
+    player === EPlayer.white
       ? pieces[end].ascii === "p" &&
         start >= 48 &&
         start <= 55 &&
@@ -54,22 +55,22 @@ export default function getMoveConditions(
         end - start === 16;
   const passant = passantTrue ? end : -1;
 
-  const isWhiteMated = checkmate("w", pieces, passantPos, castlingConditions);
-  const isBlackMated = checkmate("b", pieces, passantPos, castlingConditions);
+  const isWhiteMated = checkmate(EPlayer.white, pieces, passantPos, castlingConditions);
+  const isBlackMated = checkmate(EPlayer.black, pieces, passantPos, castlingConditions);
 
-  const isWhiteStaled = stalemate("w", pieces, passantPos, castlingConditions);
-  const isBlackStaled = stalemate("b", pieces, passantPos, castlingConditions);
+  const isWhiteStaled = stalemate(EPlayer.white, pieces, passantPos, castlingConditions);
+  const isBlackStaled = stalemate(EPlayer.black, pieces, passantPos, castlingConditions);
 
-  if (player === "w") {
-    pieces = highlightMate("b", pieces, isBlackMated, isBlackStaled);
+  if (player === EPlayer.white) {
+    pieces = highlightMate(EPlayer.black, pieces, isBlackMated, isBlackStaled);
   } else {
-    pieces = highlightMate("w", pieces, isWhiteMated, isWhiteStaled);
+    pieces = highlightMate(EPlayer.white, pieces, isWhiteMated, isWhiteStaled);
   }
 
   const checkMated = isWhiteMated || isBlackMated;
 
   const staleMated =
-    (isWhiteStaled && player === "b") || (isBlackStaled && player === "w");
+    (isWhiteStaled && player === EPlayer.black) || (isBlackStaled && player === EPlayer.white);
 
   return { checkMated, staleMated, passant, collection };
 }

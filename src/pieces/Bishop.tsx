@@ -1,4 +1,5 @@
 import { ReactElement } from "react";
+import { EPlayer } from "../models/enums/Player.enum";
 
 export default class Bishop {
   player: string;
@@ -13,10 +14,10 @@ export default class Bishop {
     this.possible = false;
     this.icon = (
       <span className="piece">
-        {player === "w" ? String.fromCharCode(9815) : String.fromCharCode(9821)}
+        {player === EPlayer.white ? String.fromCharCode(9815) : String.fromCharCode(9821)}
       </span>
     );
-    this.ascii = player === "w" ? "b" : "B";
+    this.ascii = player === EPlayer.white ? EPlayer.black : EPlayer.black;
   }
 
   canMove(start: number, end: number) {

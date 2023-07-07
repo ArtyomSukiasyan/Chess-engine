@@ -1,4 +1,5 @@
 import { ICastlingConditions } from "../models/CastlingConditions";
+import { EPlayer } from "../models/enums/Player.enum";
 import { IPiece } from "../models/Piece";
 
 export default function checkCastlingConditions(
@@ -7,8 +8,8 @@ export default function checkCastlingConditions(
   castlingConditions: ICastlingConditions,
   start: number
 ) {
-  if (pieces[start]?.ascii === (player === "w" ? "k" : "K")) {
-    if (player === "w") {
+  if (pieces[start]?.ascii === (player === EPlayer.white ? "k" : "K")) {
+    if (player === EPlayer.white) {
       castlingConditions = {
         ...castlingConditions,
         whiteKingHasMoved: true,
@@ -21,9 +22,9 @@ export default function checkCastlingConditions(
     }
   }
 
-  if (pieces[start].ascii === (player === "w" ? "r" : "R")) {
-    if (start === (player === "w" ? 56 : 0)) {
-      if (player === "w") {
+  if (pieces[start].ascii === (player === EPlayer.white ? "r" : "R")) {
+    if (start === (player === EPlayer.white ? 56 : 0)) {
+      if (player === EPlayer.white) {
         castlingConditions = {
           ...castlingConditions,
           leftWhiteRookHasMoved: true,
@@ -34,8 +35,8 @@ export default function checkCastlingConditions(
           leftBlackRookHasMoved: true,
         };
       }
-    } else if (start === (player === "w" ? 63 : 7)) {
-      if (player === "w") {
+    } else if (start === (player === EPlayer.white ? 63 : 7)) {
+      if (player === EPlayer.white) {
         castlingConditions = {
           ...castlingConditions,
           rightWhiteRookHasMoved: true,
