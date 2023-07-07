@@ -1,10 +1,10 @@
-import Collected from "../components/Collection";
-import { ICastlingConditions } from "../models/CastlingConditions";
-import { EPlayer } from "../models/enums/Player.enum";
-import { IPiece } from "../models/Piece";
-import FillerPiece from "../pieces/FillerPiece";
+import Collected from "../../components/Collection";
+import { ICastlingConditions } from "../../models/CastlingConditions";
+import { EPlayer } from "../../models/enums/Player.enum";
+import { IPiece } from "../../models/Piece";
+import FillerPiece from "../../pieces/FillerPiece";
 import checkmate from "./checkmate";
-import highlightMate from "./UI/highlightMate";
+import highlightMate from "../UI/highlightMate";
 import makeMove from "./makeMove";
 import stalemate from "./stalemate";
 

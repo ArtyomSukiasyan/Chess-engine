@@ -1,7 +1,7 @@
 import { ICastlingConditions } from "../models/CastlingConditions";
 import { EPlayer } from "../models/enums/Player.enum";
 import { IPiece } from "../models/Piece";
-import isMoveAvailable from "./isMoveAvailable";
+import isMoveAvailable from "./gamoLogic/isMoveAvailable";
 import shuffle from "./shuffle";
 
 export default function getMoves(

@@ -1,8 +1,8 @@
-import { ICastlingConditions } from "../models/CastlingConditions";
-import { EPlayer } from "../models/enums/Player.enum";
-import { IPiece } from "../models/Piece";
-import FillerPiece from "../pieces/FillerPiece";
-import Queen from "../pieces/Queen";
+import { ICastlingConditions } from "../../models/CastlingConditions";
+import { EPlayer } from "../../models/enums/Player.enum";
+import { IPiece } from "../../models/Piece";
+import FillerPiece from "../../pieces/FillerPiece";
+import Queen from "../../pieces/Queen";
 import inCheck from "./inCheck";
 import isInvalidMove from "./isInvalidMove";
 

@@ -2,8 +2,8 @@ import { ICastlingConditions } from "../models/CastlingConditions";
 import { EPlayer } from "../models/enums/Player.enum";
 import { IPiece } from "../models/Piece";
 import evaluateBlack from "./evaluateBlack";
-import isMoveAvailable from "./isMoveAvailable";
-import makeMove from "./makeMove";
+import isMoveAvailable from "./gamoLogic/isMoveAvailable";
+import makeMove from "./gamoLogic/makeMove";
 
 export default function minimax(
   depth: number,

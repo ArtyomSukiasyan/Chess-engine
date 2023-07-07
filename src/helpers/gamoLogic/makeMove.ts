@@ -1,7 +1,7 @@
-import { EPlayer } from "../models/enums/Player.enum";
-import { IPiece } from "../models/Piece";
-import FillerPiece from "../pieces/FillerPiece";
-import Queen from "../pieces/Queen";
+import { EPlayer } from "../../models/enums/Player.enum";
+import { IPiece } from "../../models/Piece";
+import FillerPiece from "../../pieces/FillerPiece";
+import Queen from "../../pieces/Queen";
 
 export default function makeMove(
   pieces: IPiece[],

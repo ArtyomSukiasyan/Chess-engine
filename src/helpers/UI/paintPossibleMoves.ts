@@ -3,7 +3,7 @@ import { EPlayer } from "../../models/enums/Player.enum";
 import { IPiece } from "../../models/Piece";
 import clearCheckHighlight from "./clearCheckHighlight";
 import clearPossibleHighlight from "./clearPossibleHighlight";
-import isMoveAvailable from "../isMoveAvailable";
+import isMoveAvailable from "../gamoLogic/isMoveAvailable";
 
 export default function paintPossibleMoves(
   pieces: IPiece[],
