@@ -27,12 +27,12 @@ const Game: React.FC = () => {
   );
   const [passantPos, setPassantPos] = useState<number>(-1);
   const [isBotRunning, setIsBotRunning] = useState<boolean>(false);
-  const [piecesCollectedByWhite, setPiecesCollectedByWhite] = useState<any[]>(
-    []
-  );
-  const [piecesCollectedByBlack, setPiecesCollectedByBlack] = useState<any[]>(
-    []
-  );
+  const [piecesCollectedByWhite, setPiecesCollectedByWhite] = useState<
+    JSX.Element[]
+  >([]);
+  const [piecesCollectedByBlack, setPiecesCollectedByBlack] = useState<
+    JSX.Element[]
+  >([]);
   const [mated, setMated] = useState<boolean>(false);
 
   const reset = () => {
