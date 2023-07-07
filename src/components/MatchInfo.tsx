@@ -1,3 +1,10 @@
+import {
+  blackPlayer,
+  description,
+  matchInfo,
+  title,
+  whitePlayer,
+} from "../constants/info";
 import { EPlayer } from "../models/enums/Player.enum";
 import { IMatchInfo } from "../models/MatchInfo";
 import MateWrapper from "./MateWrapper";
@@ -10,37 +17,33 @@ export default function MatchInfo({
   piecesCollectedByWhite,
   piecesCollectedByBlack,
 }: IMatchInfo) {
+  const isWhiteTurn = turn === EPlayer.white;
+
   return (
     <>
       <div className="content">
-        <p className="header_font">ReactJS Chess</p>
-        <p className="medium_font">Play against our friendly bot!</p>
+        <p className="header_font">{title}</p>
+        <p className="medium_font">{description}</p>
       </div>
       <div className="content title">
-        <p className="header_2_font">Match Information</p>
+        <p className="header_2_font">{matchInfo}</p>
       </div>
 
       <div className="wrapper">
-        <div className="player_box">
-          <p className="medium_font">White (You)</p>
-          {piecesCollectedByWhite}
-        </div>
-        <div className="player_box black_player_color">
-          <p className="medium_font">Black (Bot)</p>
-          {piecesCollectedByBlack}
-        </div>
+        <PlayerBox
+          player={whitePlayer}
+          pieces={piecesCollectedByWhite}
+          isBlack={false}
+        />
+        <PlayerBox
+          player={blackPlayer}
+          pieces={piecesCollectedByBlack}
+          isBlack={true}
+        />
       </div>
       <div className="wrapper">
-        {turn === EPlayer.white ? (
-          <div className="highlight_box"></div>
-        ) : (
-          <div className="highlight_box transparent"></div>
-        )}
-        {turn === EPlayer.black ? (
-          <div className="highlight_box"></div>
-        ) : (
-          <div className="highlight_box transparent"></div>
-        )}
+        <HighlightBox isWhiteTurn={!isWhiteTurn} />
+        <HighlightBox isWhiteTurn={isWhiteTurn} />
       </div>
 
       <MateWrapper
@@ -50,5 +53,26 @@ export default function MatchInfo({
         turn={turn}
       />
     </>
+  );
+}
+
+interface IPlayerBox {
+  player: string;
+  pieces: JSX.Element[];
+  isBlack: boolean;
+}
+
+function PlayerBox({ player, pieces, isBlack }: IPlayerBox) {
+  return (
+    <div className={`player_box ${isBlack && "black_player_color"} `}>
+      <p className="medium_font">{player}</p>
+      {pieces}
+    </div>
+  );
+}
+
+function HighlightBox({ isWhiteTurn }: { isWhiteTurn: boolean }) {
+  return (
+    <div className={`highlight_box ${isWhiteTurn && "transparent"}`}></div>
   );
 }

@@ -1,4 +1,5 @@
 import { MouseEventHandler } from "react";
+import { restart } from "../constants/info";
 
 export default function ResetButton({
   onClick,
@@ -8,7 +9,7 @@ export default function ResetButton({
   return (
     <div className="button_wrapper">
       <button className="reset_button" onClick={onClick}>
-        <p className="button_font">Restart Game</p>
+        <p className="button_font">{restart}</p>
       </button>
     </div>
   );

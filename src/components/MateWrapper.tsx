@@ -1,7 +1,4 @@
-import checkmate from "../helpers/gameLogic/checkmate";
-import inCheck from "../helpers/gameLogic/inCheck";
-import stalemate from "../helpers/gameLogic/stalemate";
-import { EPlayer } from "../models/enums/Player.enum";
+import getMateInfo from "../helpers/gameLogic/getMateInfo";
 import { IMateWrapper } from "../models/MateWrapper";
 
 export default function MateWrapper({
@@ -10,40 +7,15 @@ export default function MateWrapper({
   castlingConditions,
   turn,
 }: IMateWrapper) {
+  const mateInfo = getMateInfo(pieces, passantPos, castlingConditions, turn);
+
   return (
     <div className="mate_wrapper">
-      <p className="small_font">
-        {inCheck(EPlayer.white, pieces, passantPos, castlingConditions) &&
-        checkmate(EPlayer.white, pieces, passantPos, castlingConditions)
-          ? "You are in check!"
-          : ""}
-      </p>
-      <p className="small_font">
-        {inCheck(EPlayer.black, pieces, passantPos, castlingConditions) &&
-        !checkmate(EPlayer.black, pieces, passantPos, castlingConditions)
-          ? "Black player is in check."
-          : ""}
-      </p>
-      <p className="small_font">
-        {checkmate(EPlayer.white, pieces, passantPos, castlingConditions)
-          ? "You lost by checkmate."
-          : ""}
-      </p>
-      <p className="small_font">
-        {checkmate(EPlayer.black, pieces, passantPos, castlingConditions)
-          ? "You won by checkmate!"
-          : ""}
-      </p>
-      <p className="small_font">
-        {stalemate(EPlayer.white, pieces, passantPos, castlingConditions) && turn === EPlayer.white
-          ? "You are in stalemate. Game over."
-          : ""}
-      </p>
-      <p className="small_font">
-        {stalemate(EPlayer.black, pieces, passantPos, castlingConditions) && turn === EPlayer.black
-          ? "Black is in stalemate. Game over."
-          : ""}
-      </p>
+      {mateInfo.map((el) => (
+        <p className="small_font" key={el.text}>
+          {el.condition && el.additionalCondition && el.text}
+        </p>
+      ))}
     </div>
   );
 }

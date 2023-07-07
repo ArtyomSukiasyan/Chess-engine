@@ -8,7 +8,7 @@ export default function Square({
   onClick,
 }: ISquare) {
   return (
-    <button className={"square " + color + corner + cursor} onClick={onClick}>
+    <button className={`square ${color} ${corner} ${cursor}`} onClick={onClick}>
       {value && value.icon}
     </button>
   );
