@@ -1,7 +1,6 @@
 import React from "react";
 import "./App.css";
 import MatchInfo from "./components/MatchInfo";
-import Square from "./components/Square";
 import clearPiecesHighlight from "./helpers/clearPiecesHighlight";
 import getMoveConditions from "./helpers/getMoveConditions";
 import initializeBoard from "./helpers/initializeBoard";
@@ -13,8 +12,8 @@ import checkCastlingConditions from "./helpers/checkCastlingConditions";
 import paintPossibleMoves from "./helpers/paintPossibleMoves";
 import paintCheck from "./helpers/paintCheck";
 import { defaultState } from "./models/defaultState";
-import getSquareClasses from "./helpers/getSquareClasses";
 import Board from "./components/Board";
+import ResetButton from "./components/ResetButton";
 
 export default class Game extends React.Component<{}, defaultState> {
   constructor(props: {}) {
@@ -147,54 +146,54 @@ export default class Game extends React.Component<{}, defaultState> {
     this.executeMove("b", squares, randStart, randEnd);
   }
 
-  handleClick(i: number) {
+  handleClick(idx: number) {
     let copySquares = this.state.pieces.slice();
 
     if (this.state.mated) {
-      return "game-over";
+      return;
     }
 
     if (this.state.source === -1 && this.state.isBotRunning === false) {
-      if (copySquares[i].player !== this.state.turn) {
+      if (copySquares[idx].player !== this.state.turn) {
         return;
       }
 
-      if (copySquares[i].player !== null) {
+      if (copySquares[idx].player !== null) {
         copySquares = paintPossibleMoves(
           copySquares,
-          i,
+          idx,
           this.state.passantPos,
           this.state.castlingConditions
         );
 
         this.setState({
-          source: i,
+          source: idx,
           pieces: copySquares,
         });
       }
     }
 
     if (this.state.source > -1) {
-      const isCannibalism = copySquares[i].player === this.state.turn;
+      const isCannibalism = copySquares[idx].player === this.state.turn;
 
-      if (isCannibalism && this.state.source !== i) {
+      if (isCannibalism && this.state.source !== idx) {
         copySquares[this.state.source].highlight = false;
 
         copySquares = paintPossibleMoves(
           copySquares,
-          i,
+          idx,
           this.state.passantPos,
           this.state.castlingConditions
         );
 
         this.setState({
-          source: i,
+          source: idx,
           pieces: copySquares,
         });
       } else {
         const availableSquare = isMoveAvailable(
           this.state.source,
-          i,
+          idx,
           copySquares,
           this.state.passantPos,
           this.state.castlingConditions
@@ -203,7 +202,7 @@ export default class Game extends React.Component<{}, defaultState> {
         if (!availableSquare) {
           copySquares = paintCheck(
             copySquares,
-            i,
+            idx,
             this.state.source,
             this.state.passantPos,
             this.state.castlingConditions
@@ -214,10 +213,10 @@ export default class Game extends React.Component<{}, defaultState> {
             pieces: copySquares,
           });
 
-          return "invalid move";
+          return;
         }
 
-        this.executeMove("w", copySquares, this.state.source, i);
+        this.executeMove("w", copySquares, this.state.source, idx);
 
         const searchDepth = 3;
         setTimeout(() => {
@@ -228,38 +227,8 @@ export default class Game extends React.Component<{}, defaultState> {
   }
 
   render() {
-    const board = [];
-
-    for (let i = 0; i < 8; i++) {
-      const squareRows = [];
-
-      for (let j = 0; j < 8; j++) {
-        const { squareColor, squareCorner, squareCursor, pieces } =
-          getSquareClasses(
-            i,
-            j,
-            this.state.pieces,
-            this.state.isBotRunning,
-            this.state.mated
-          );
-
-        squareRows.push(
-          <Square
-            key={i * 8 + j}
-            value={pieces[i * 8 + j]}
-            color={squareColor}
-            corner={squareCorner}
-            cursor={squareCursor}
-            onClick={() => this.handleClick(i * 8 + j)}
-          />
-        );
-      }
-
-      board.push(<div key={i}>{squareRows}</div>);
-    }
-
     return (
-      <div>
+      <>
         <div className="left_screen ">
           <div className="side_box">
             <MatchInfo
@@ -271,16 +240,17 @@ export default class Game extends React.Component<{}, defaultState> {
               piecesCollectedByBlack={this.state.piecesCollectedByBlack}
             />
 
-            <div className="button_wrapper">
-              <button className="reset_button" onClick={() => this.reset()}>
-                <p className="button_font">Restart Game</p>
-              </button>
-            </div>
+            <ResetButton onClick={this.reset.bind(this)} />
           </div>
         </div>
 
-        <Board board={board} />
-      </div>
+        <Board
+          isBotRunning={this.state.isBotRunning}
+          mated={this.state.mated}
+          onClick={this.handleClick.bind(this)}
+          statePieces={this.state.pieces}
+        />
+      </>
     );
   }
 }
