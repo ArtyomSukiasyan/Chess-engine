@@ -5,8 +5,8 @@ import Square from "./components/Square";
 import { colNumbers, rowNumbers } from "./constants/colNumbersAndRowNumbers";
 import calcSquareColor from "./helpers/calcSquareColor";
 import clearCheckHighlight from "./helpers/clearCheckHighlight";
-import clearHighlight from "./helpers/clearHighlight";
 import clearPossibleHighlight from "./helpers/clearPossibleHighlight";
+import clearPiecesHighlight from "./helpers/clearPiecesHighlight";
 import getMoveConditions from "./helpers/getMoveConditions";
 import inCheck from "./helpers/inCheck";
 import initializeBoard from "./helpers/initializeBoard";
@@ -93,17 +93,7 @@ export default class Board extends React.Component<{}, MyComponentState> {
   }
 
   executeMove(player: string, squares: IPiece[], start: number, end: number) {
-    squares = clearHighlight(squares);
-
-    if (player === "w") {
-      squares = clearPossibleHighlight(squares);
-      for (let j = 0; j < 64; j++) {
-        if (squares[j].ascii === "k") {
-          squares[j].inCheck = false;
-          break;
-        }
-      }
-    }
+    squares = clearPiecesHighlight(squares, player);
 
     if (squares[start].ascii === (player === "w" ? "k" : "K")) {
       if (player === "w") {
@@ -343,10 +333,12 @@ export default class Board extends React.Component<{}, MyComponentState> {
 
     if (this.state.source > -1) {
       const cannibalism = copySquares[i].player === this.state.turn;
+
       if (cannibalism && this.state.source !== i) {
         copySquares[i].highlight = true;
         copySquares[this.state.source].highlight = false;
-        copySquares = clearPossibleHighlight(copySquares).slice();
+        copySquares = clearPossibleHighlight(copySquares);
+
         for (let j = 0; j < 64; j++) {
           if (
             isMoveAvailable(
