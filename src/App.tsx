@@ -13,9 +13,9 @@ import initializeBoard from "./helpers/initializeBoard";
 import isMoveAvailable from "./helpers/isMoveAvailable";
 import makeMove from "./helpers/makeMove";
 import minimax from "./helpers/minimax";
-import shuffle from "./helpers/shuffle";
 import { ICastlingConditions } from "./models/CastlingConditions";
 import { IPiece } from "./models/Piece";
+import getMoves from "./helpers/getMoves";
 
 type MyComponentState = {
   squares: IPiece[];
@@ -112,6 +112,7 @@ export default class Board extends React.Component<{}, MyComponentState> {
         });
       }
     }
+
     if (squares[start].ascii === (player === "w" ? "r" : "R")) {
       if (start === (player === "w" ? 56 : 0)) {
         if (player === "w") {
@@ -188,48 +189,20 @@ export default class Board extends React.Component<{}, MyComponentState> {
       return "bot cannot run";
     }
 
+    const { moves, starts, ends } = getMoves(
+      squares,
+      this.state.passantPos,
+      this.state.castlingConditions
+    );
+
     let randStart = 100;
     let randEnd = 100;
-    let starts = [];
-    let ends = [];
-
-    for (let i = 0; i < 64; i++) {
-      starts.push(i);
-      ends.push(i);
-    }
-
-    starts = shuffle(starts);
-    ends = shuffle(ends);
-
-    let moves = [];
-    for (let i = 0; i < 64; i++) {
-      let start = starts[i];
-      let isBlackPiece =
-        squares[start].ascii !== null && squares[start].player === "b";
-      if (isBlackPiece) {
-        for (let j = 0; j < 64; j++) {
-          let end = ends[j];
-          if (
-            isMoveAvailable(
-              start,
-              end,
-              squares,
-              this.state.passantPos,
-              this.state.castlingConditions
-            )
-          ) {
-            moves.push(start);
-            moves.push(end);
-          }
-        }
-      }
-    }
-
     let bestValue = -9999;
 
     for (let i = 0; i < moves.length; i += 2) {
       let start = moves[i];
       let end = moves[i + 1];
+
       if (
         moves.length > 2 &&
         this.state.repetition >= 2 &&
@@ -241,20 +214,24 @@ export default class Board extends React.Component<{}, MyComponentState> {
         });
       } else {
         const testSquares = squares.slice();
+
         const testSquares_2 = makeMove(
           testSquares,
           start,
           end,
           this.state.passantPos
         );
+
         let passant_pos = 65;
+
         if (
           testSquares[start].ascii === "P" &&
           start >= 8 &&
           start <= 15 &&
           end - start === 16
-        )
+        ) {
           passant_pos = end;
+        }
 
         let board_eval = minimax(
           depth - 1,
@@ -268,6 +245,7 @@ export default class Board extends React.Component<{}, MyComponentState> {
           this.state.castlingConditions,
           passant_pos
         );
+        
         if (board_eval >= bestValue) {
           bestValue = board_eval;
           randStart = start;
