@@ -11,11 +11,10 @@ import getMoveConditions from "./helpers/getMoveConditions";
 import inCheck from "./helpers/inCheck";
 import initializeBoard from "./helpers/initializeBoard";
 import isMoveAvailable from "./helpers/isMoveAvailable";
-import makeMove from "./helpers/makeMove";
-import minimax from "./helpers/minimax";
 import { ICastlingConditions } from "./models/CastlingConditions";
 import { IPiece } from "./models/Piece";
 import getMoves from "./helpers/getMoves";
+import findBestMove from "./helpers/findBestMove";
 
 type MyComponentState = {
   squares: IPiece[];
@@ -195,82 +194,23 @@ export default class Board extends React.Component<{}, MyComponentState> {
       this.state.castlingConditions
     );
 
-    let randStart = 100;
-    let randEnd = 100;
-    let bestValue = -9999;
+    const { randStart, randEnd, repetition } = findBestMove(
+      moves,
+      this.state.repetition,
+      this.state.firstPos,
+      this.state.secondPos,
+      squares,
+      this.state.passantPos,
+      depth,
+      starts,
+      ends,
+      this.state.castlingConditions
+    );
 
-    for (let i = 0; i < moves.length; i += 2) {
-      let start = moves[i];
-      let end = moves[i + 1];
-
-      if (
-        moves.length > 2 &&
-        this.state.repetition >= 2 &&
-        start === this.state.secondPos &&
-        end === this.state.firstPos
-      ) {
-        this.setState({
-          repetition: 0,
-        });
-      } else {
-        const testSquares = squares.slice();
-
-        const testSquares_2 = makeMove(
-          testSquares,
-          start,
-          end,
-          this.state.passantPos
-        );
-
-        let passant_pos = 65;
-
-        if (
-          testSquares[start].ascii === "P" &&
-          start >= 8 &&
-          start <= 15 &&
-          end - start === 16
-        ) {
-          passant_pos = end;
-        }
-
-        let board_eval = minimax(
-          depth - 1,
-          false,
-          -1000,
-          1000,
-          testSquares_2,
-          starts,
-          ends,
-          this.state.passantPos,
-          this.state.castlingConditions,
-          passant_pos
-        );
-        
-        if (board_eval >= bestValue) {
-          bestValue = board_eval;
-          randStart = start;
-          randEnd = end;
-        }
-      }
-    }
-
-    if (randEnd !== 100) {
-      if (
-        randStart === this.state.secondPos &&
-        randEnd === this.state.firstPos
-      ) {
-        let reps = this.state.repetition + 1;
-        this.setState({
-          repetition: reps,
-        });
-      } else {
-        this.setState({
-          repetition: 0,
-        });
-      }
-
-      this.executeMove("b", squares, randStart, randEnd);
-    }
+    this.setState({
+      repetition: repetition,
+    });
+    this.executeMove("b", squares, randStart, randEnd);
   }
 
   handleClick(i: number) {
