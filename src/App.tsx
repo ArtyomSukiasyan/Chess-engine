@@ -15,6 +15,7 @@ import { ICastlingConditions } from "./models/CastlingConditions";
 import { IPiece } from "./models/Piece";
 import getMoves from "./helpers/getMoves";
 import findBestMove from "./helpers/findBestMove";
+import checkCastlingConditions from "./helpers/checkCastlingConditions";
 
 type MyComponentState = {
   squares: IPiece[];
@@ -94,59 +95,16 @@ export default class Board extends React.Component<{}, MyComponentState> {
   executeMove(player: string, squares: IPiece[], start: number, end: number) {
     squares = clearPiecesHighlight(squares, player);
 
-    if (squares[start].ascii === (player === "w" ? "k" : "K")) {
-      if (player === "w") {
-        this.setState({
-          castlingConditions: {
-            ...this.state.castlingConditions,
-            whiteKingHasMoved: true,
-          },
-        });
-      } else {
-        this.setState({
-          castlingConditions: {
-            ...this.state.castlingConditions,
-            whiteKingHasMoved: true,
-          },
-        });
-      }
-    }
+    const newCastlingConditions = checkCastlingConditions(
+      squares,
+      player,
+      this.state.castlingConditions,
+      start
+    );
 
-    if (squares[start].ascii === (player === "w" ? "r" : "R")) {
-      if (start === (player === "w" ? 56 : 0)) {
-        if (player === "w") {
-          this.setState({
-            castlingConditions: {
-              ...this.state.castlingConditions,
-              whiteKingHasMoved: true,
-            },
-          });
-        } else {
-          this.setState({
-            castlingConditions: {
-              ...this.state.castlingConditions,
-              whiteKingHasMoved: true,
-            },
-          });
-        }
-      } else if (start === (player === "w" ? 63 : 7)) {
-        if (player === "w") {
-          this.setState({
-            castlingConditions: {
-              ...this.state.castlingConditions,
-              whiteKingHasMoved: true,
-            },
-          });
-        } else {
-          this.setState({
-            castlingConditions: {
-              ...this.state.castlingConditions,
-              whiteKingHasMoved: true,
-            },
-          });
-        }
-      }
-    }
+    this.setState({
+      castlingConditions: newCastlingConditions,
+    });
 
     const { checkMated, passant, staleMated, collection } = getMoveConditions(
       player,
