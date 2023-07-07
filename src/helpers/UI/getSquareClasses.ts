@@ -1,5 +1,5 @@
-import { EPlayer } from "../models/enums/Player.enum";
-import { IPiece } from "../models/Piece";
+import { EPlayer } from "../../models/enums/Player.enum";
+import { IPiece } from "../../models/Piece";
 import calcSquareColor from "./calcSquareColor";
 
 export default function getSquareClasses(

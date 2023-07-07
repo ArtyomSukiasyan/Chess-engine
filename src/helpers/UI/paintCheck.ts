@@ -1,8 +1,8 @@
-import { ICastlingConditions } from "../models/CastlingConditions";
-import { EPlayer } from "../models/enums/Player.enum";
-import { IPiece } from "../models/Piece";
+import { ICastlingConditions } from "../../models/CastlingConditions";
+import { EPlayer } from "../../models/enums/Player.enum";
+import { IPiece } from "../../models/Piece";
 import clearPossibleHighlight from "./clearPossibleHighlight";
-import inCheck from "./inCheck";
+import inCheck from "../inCheck";
 
 export default function paintCheck(
   pieces: IPiece[],

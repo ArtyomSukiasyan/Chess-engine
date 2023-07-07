@@ -1,5 +1,5 @@
 import { colNumbers, rowNumbers } from "../constants/colNumbersAndRowNumbers";
-import getSquareClasses from "../helpers/getSquareClasses";
+import getSquareClasses from "../helpers/UI/getSquareClasses";
 import { IBoard } from "../models/Board";
 import Square from "./Square";
 

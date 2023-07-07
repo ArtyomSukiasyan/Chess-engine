@@ -1,5 +1,5 @@
-import { EPlayer } from "../models/enums/Player.enum";
-import { IPiece } from "../models/Piece";
+import { EPlayer } from "../../models/enums/Player.enum";
+import { IPiece } from "../../models/Piece";
 import clearHighlight from "./clearHighlight";
 import clearPossibleHighlight from "./clearPossibleHighlight";
 

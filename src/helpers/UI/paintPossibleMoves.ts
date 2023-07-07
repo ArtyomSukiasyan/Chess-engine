@@ -1,9 +1,9 @@
-import { ICastlingConditions } from "../models/CastlingConditions";
-import { EPlayer } from "../models/enums/Player.enum";
-import { IPiece } from "../models/Piece";
+import { ICastlingConditions } from "../../models/CastlingConditions";
+import { EPlayer } from "../../models/enums/Player.enum";
+import { IPiece } from "../../models/Piece";
 import clearCheckHighlight from "./clearCheckHighlight";
 import clearPossibleHighlight from "./clearPossibleHighlight";
-import isMoveAvailable from "./isMoveAvailable";
+import isMoveAvailable from "../isMoveAvailable";
 
 export default function paintPossibleMoves(
   pieces: IPiece[],
