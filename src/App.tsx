@@ -20,7 +20,7 @@ export default class Game extends React.Component<{}, defaultState> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      squares: initializeBoard(),
+      pieces: initializeBoard(),
       source: -1,
       turn: "w",
       firstPos: -1,
@@ -48,7 +48,7 @@ export default class Game extends React.Component<{}, defaultState> {
     }
 
     this.setState({
-      squares: initializeBoard(),
+      pieces: initializeBoard(),
       source: -1,
       turn: "w",
       firstPos: -1,
@@ -97,7 +97,7 @@ export default class Game extends React.Component<{}, defaultState> {
 
     this.setState({
       passantPos: passant,
-      squares: squares,
+      pieces: squares,
       source: -1,
       mated: checkMated || staleMated,
       turn: player === "b" ? "w" : "b",
@@ -148,7 +148,7 @@ export default class Game extends React.Component<{}, defaultState> {
   }
 
   handleClick(i: number) {
-    let copySquares = this.state.squares.slice();
+    let copySquares = this.state.pieces.slice();
 
     if (this.state.mated) {
       return "game-over";
@@ -169,7 +169,7 @@ export default class Game extends React.Component<{}, defaultState> {
 
         this.setState({
           source: i,
-          squares: copySquares,
+          pieces: copySquares,
         });
       }
     }
@@ -189,7 +189,7 @@ export default class Game extends React.Component<{}, defaultState> {
 
         this.setState({
           source: i,
-          squares: copySquares,
+          pieces: copySquares,
         });
       } else {
         const availableSquare = isMoveAvailable(
@@ -211,7 +211,7 @@ export default class Game extends React.Component<{}, defaultState> {
 
           this.setState({
             source: -1,
-            squares: copySquares,
+            pieces: copySquares,
           });
 
           return "invalid move";
@@ -221,7 +221,7 @@ export default class Game extends React.Component<{}, defaultState> {
 
         const searchDepth = 3;
         setTimeout(() => {
-          this.executeBot(searchDepth, this.state.squares);
+          this.executeBot(searchDepth, this.state.pieces);
         }, 700);
       }
     }
@@ -238,7 +238,7 @@ export default class Game extends React.Component<{}, defaultState> {
           getSquareClasses(
             i,
             j,
-            this.state.squares,
+            this.state.pieces,
             this.state.isBotRunning,
             this.state.mated
           );
@@ -263,7 +263,7 @@ export default class Game extends React.Component<{}, defaultState> {
         <div className="left_screen ">
           <div className="side_box">
             <MatchInfo
-              pieces={this.state.squares}
+              pieces={this.state.pieces}
               castlingConditions={this.state.castlingConditions}
               passantPos={this.state.passantPos}
               turn={this.state.turn}

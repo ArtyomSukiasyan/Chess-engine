@@ -2,7 +2,7 @@ import { ICastlingConditions } from "./CastlingConditions";
 import { IPiece } from "./Piece";
 
 export type defaultState = {
-  squares: IPiece[];
+  pieces: IPiece[];
   source: number;
   turn: string;
   firstPos: number;
