@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 import "./App.css";
 import MatchInfo from "./components/MatchInfo";
 import clearPiecesHighlight from "./helpers/clearPiecesHighlight";
@@ -11,146 +12,126 @@ import findBestMove from "./helpers/findBestMove";
 import checkCastlingConditions from "./helpers/checkCastlingConditions";
 import paintPossibleMoves from "./helpers/paintPossibleMoves";
 import paintCheck from "./helpers/paintCheck";
-import { defaultState } from "./models/defaultState";
 import Board from "./components/Board";
 import ResetButton from "./components/ResetButton";
+import { defaultCastlingConditions } from "./constants/castlingConditions";
 
-export default class Game extends React.Component<{}, defaultState> {
-  constructor(props: {}) {
-    super(props);
-    this.state = {
-      pieces: initializeBoard(),
-      source: -1,
-      turn: "w",
-      firstPos: -1,
-      secondPos: -1,
-      repetition: 0,
-      castlingConditions: {
-        whiteKingHasMoved: false,
-        blackKingHasMoved: false,
-        leftBlackRookHasMoved: false,
-        rightBlackRookHasMoved: false,
-        leftWhiteRookHasMoved: false,
-        rightWhiteRookHasMoved: false,
-      },
-      passantPos: -1,
-      isBotRunning: false,
-      piecesCollectedByWhite: [],
-      piecesCollectedByBlack: [],
-      mated: false,
-    };
-  }
+const Game: React.FC = () => {
+  const [pieces, setPieces] = useState<IPiece[]>(initializeBoard());
+  const [source, setSource] = useState<number>(-1);
+  const [turn, setTurn] = useState<string>("w");
+  const [firstPos, setFirstPos] = useState<number>(-1);
+  const [secondPos, setSecondPos] = useState<number>(-1);
+  const [repetition, setRepetition] = useState<number>(0);
+  const [castlingConditions, setCastlingConditions] = useState(
+    defaultCastlingConditions
+  );
+  const [passantPos, setPassantPos] = useState<number>(-1);
+  const [isBotRunning, setIsBotRunning] = useState<boolean>(false);
+  const [piecesCollectedByWhite, setPiecesCollectedByWhite] = useState<any[]>(
+    []
+  );
+  const [piecesCollectedByBlack, setPiecesCollectedByBlack] = useState<any[]>(
+    []
+  );
+  const [mated, setMated] = useState<boolean>(false);
 
-  reset() {
-    this.setState({
-      pieces: initializeBoard(),
-      source: -1,
-      turn: "w",
-      firstPos: -1,
-      secondPos: -1,
-      repetition: 0,
-      castlingConditions: {
-        whiteKingHasMoved: false,
-        blackKingHasMoved: false,
-        leftBlackRookHasMoved: false,
-        rightBlackRookHasMoved: false,
-        leftWhiteRookHasMoved: false,
-        rightWhiteRookHasMoved: false,
-      },
-      passantPos: -1,
-      isBotRunning: false,
-      piecesCollectedByWhite: [],
-      piecesCollectedByBlack: [],
-      mated: false,
-    });
-  }
+  const reset = () => {
+    setPieces(initializeBoard());
+    setSource(-1);
+    setTurn("w");
+    setFirstPos(-1);
+    setSecondPos(-1);
+    setRepetition(0);
+    setCastlingConditions(defaultCastlingConditions);
+    setPassantPos(-1);
+    setIsBotRunning(false);
+    setPiecesCollectedByWhite([]);
+    setPiecesCollectedByBlack([]);
+    setMated(false);
+  };
 
-  executeMove(player: string, squares: IPiece[], start: number, end: number) {
-    squares = clearPiecesHighlight(squares, player);
+  const executeMove = (
+    player: string,
+    squares: IPiece[],
+    start: number,
+    end: number
+  ) => {
+    let updatedSquares = clearPiecesHighlight(squares, player);
 
     const newCastlingConditions = checkCastlingConditions(
-      squares,
+      updatedSquares,
       player,
-      this.state.castlingConditions,
+      castlingConditions,
       start
     );
 
-    this.setState({
-      castlingConditions: newCastlingConditions,
-    });
+    setCastlingConditions(newCastlingConditions);
 
     const { checkMated, passant, staleMated, collection } = getMoveConditions(
       player,
-      this.state.piecesCollectedByWhite,
-      this.state.piecesCollectedByBlack,
-      squares,
+      piecesCollectedByWhite,
+      piecesCollectedByBlack,
+      updatedSquares,
       start,
       end,
-      this.state.passantPos,
-      this.state.castlingConditions
+      passantPos,
+      castlingConditions
     );
 
-    this.setState({
-      passantPos: passant,
-      pieces: squares,
-      source: -1,
-      mated: checkMated || staleMated,
-      turn: player === "b" ? "w" : "b",
-      isBotRunning: player !== "b",
-    });
+    setPassantPos(passant);
+    setPieces(updatedSquares);
+    setSource(-1);
+    setMated(checkMated || staleMated);
+    setTurn(player === "b" ? "w" : "b");
+    setIsBotRunning(player !== "b");
 
     if (player === "b") {
-      this.setState({
-        firstPos: start,
-        secondPos: end,
-        piecesCollectedByBlack: collection,
-      });
+      setFirstPos(start);
+      setSecondPos(end);
+      setPiecesCollectedByBlack(collection);
     } else {
-      this.setState({
-        piecesCollectedByWhite: collection,
-      });
+      setPiecesCollectedByWhite(collection);
     }
-  }
+  };
 
-  executeBot(depth: number, squares: IPiece[]) {
-    if (this.state.mated) {
+  const executeBot = (depth: number, squares: IPiece[]) => {
+    if (mated) {
       return "bot cannot run";
     }
 
     const { moves, starts, ends } = getMoves(
       squares,
-      this.state.passantPos,
-      this.state.castlingConditions
+      passantPos,
+      castlingConditions
     );
 
     const { randStart, randEnd, newRepetition } = findBestMove(
       moves,
-      this.state.repetition,
-      this.state.firstPos,
-      this.state.secondPos,
+      repetition,
+      firstPos,
+      secondPos,
       squares,
-      this.state.passantPos,
+      passantPos,
       depth,
       starts,
       ends,
-      this.state.castlingConditions
+      castlingConditions
     );
 
-    this.setState({
-      repetition: newRepetition,
-    });
-    this.executeMove("b", squares, randStart, randEnd);
-  }
+    setRepetition(newRepetition);
+    executeMove("b", squares, randStart, randEnd);
+  };
 
-  handleClick(idx: number) {
-    let copySquares = this.state.pieces.slice();
+  const handleClick = (idx: number) => {
+    let copySquares = pieces.slice();
 
-    if (this.state.mated) {
+    if (mated) {
       return;
     }
 
-    if (this.state.source === -1 && this.state.isBotRunning === false) {
-      if (copySquares[idx].player !== this.state.turn) {
+    if (source === -1 && !isBotRunning) {
+      if (copySquares[idx].player !== turn) {
         return;
       }
 
@@ -158,95 +139,89 @@ export default class Game extends React.Component<{}, defaultState> {
         copySquares = paintPossibleMoves(
           copySquares,
           idx,
-          this.state.passantPos,
-          this.state.castlingConditions
+          passantPos,
+          castlingConditions
         );
 
-        this.setState({
-          source: idx,
-          pieces: copySquares,
-        });
+        setSource(idx);
+        setPieces(copySquares);
       }
     }
 
-    if (this.state.source > -1) {
-      const isCannibalism = copySquares[idx].player === this.state.turn;
+    if (source > -1) {
+      const isCannibalism = copySquares[idx].player === turn;
 
-      if (isCannibalism && this.state.source !== idx) {
-        copySquares[this.state.source].highlight = false;
+      if (isCannibalism && source !== idx) {
+        copySquares[source].highlight = false;
 
         copySquares = paintPossibleMoves(
           copySquares,
           idx,
-          this.state.passantPos,
-          this.state.castlingConditions
+          passantPos,
+          castlingConditions
         );
 
-        this.setState({
-          source: idx,
-          pieces: copySquares,
-        });
+        setSource(idx);
+        setPieces(copySquares);
       } else {
         const availableSquare = isMoveAvailable(
-          this.state.source,
+          source,
           idx,
           copySquares,
-          this.state.passantPos,
-          this.state.castlingConditions
+          passantPos,
+          castlingConditions
         );
 
         if (!availableSquare) {
           copySquares = paintCheck(
             copySquares,
             idx,
-            this.state.source,
-            this.state.passantPos,
-            this.state.castlingConditions
+            source,
+            passantPos,
+            castlingConditions
           );
 
-          this.setState({
-            source: -1,
-            pieces: copySquares,
-          });
+          setSource(-1);
+          setPieces(copySquares);
 
           return;
         }
 
-        this.executeMove("w", copySquares, this.state.source, idx);
+        executeMove("w", pieces, source, idx);
 
         const searchDepth = 3;
         setTimeout(() => {
-          this.executeBot(searchDepth, this.state.pieces);
+          executeBot(searchDepth, pieces);
         }, 700);
       }
     }
-  }
+  };
 
-  render() {
-    return (
-      <>
-        <div className="left_screen ">
-          <div className="side_box">
-            <MatchInfo
-              pieces={this.state.pieces}
-              castlingConditions={this.state.castlingConditions}
-              passantPos={this.state.passantPos}
-              turn={this.state.turn}
-              piecesCollectedByWhite={this.state.piecesCollectedByWhite}
-              piecesCollectedByBlack={this.state.piecesCollectedByBlack}
-            />
+  return (
+    <>
+      <div className="left_screen ">
+        <div className="side_box">
+          <MatchInfo
+            pieces={pieces}
+            castlingConditions={castlingConditions}
+            passantPos={passantPos}
+            turn={turn}
+            piecesCollectedByWhite={piecesCollectedByWhite}
+            piecesCollectedByBlack={piecesCollectedByBlack}
+          />
 
-            <ResetButton onClick={this.reset.bind(this)} />
-          </div>
+          <ResetButton onClick={reset} />
         </div>
+      </div>
 
-        <Board
-          isBotRunning={this.state.isBotRunning}
-          mated={this.state.mated}
-          onClick={this.handleClick.bind(this)}
-          statePieces={this.state.pieces}
-        />
-      </>
-    );
-  }
-}
+      <Board
+        isBotRunning={isBotRunning}
+        mated={mated}
+        onClick={handleClick}
+        statePieces={pieces}
+      />
+    </>
+  );
+};
+
+export default Game;

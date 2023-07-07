@@ -7,7 +7,7 @@ export default function checkCastlingConditions(
   castlingConditions: ICastlingConditions,
   start: number
 ) {
-  if (pieces[start].ascii === (player === "w" ? "k" : "K")) {
+  if (pieces[start]?.ascii === (player === "w" ? "k" : "K")) {
     if (player === "w") {
       castlingConditions = {
         ...castlingConditions,
