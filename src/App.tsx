@@ -1,7 +1,6 @@
 import React from "react";
 import { useState } from "react";
 import "./App.css";
-import MatchInfo from "./components/MatchInfo";
 import clearPiecesHighlight from "./helpers/clearPiecesHighlight";
 import getMoveConditions from "./helpers/getMoveConditions";
 import initializeBoard from "./helpers/initializeBoard";
@@ -13,8 +12,8 @@ import checkCastlingConditions from "./helpers/checkCastlingConditions";
 import paintPossibleMoves from "./helpers/paintPossibleMoves";
 import paintCheck from "./helpers/paintCheck";
 import Board from "./components/Board";
-import ResetButton from "./components/ResetButton";
 import { defaultCastlingConditions } from "./constants/castlingConditions";
+import LeftScreen from "./components/LeftScreen";
 
 const Game: React.FC = () => {
   const [pieces, setPieces] = useState<IPiece[]>(initializeBoard());
@@ -199,20 +198,15 @@ const Game: React.FC = () => {
 
   return (
     <>
-      <div className="left_screen ">
-        <div className="side_box">
-          <MatchInfo
-            pieces={pieces}
-            castlingConditions={castlingConditions}
-            passantPos={passantPos}
-            turn={turn}
-            piecesCollectedByWhite={piecesCollectedByWhite}
-            piecesCollectedByBlack={piecesCollectedByBlack}
-          />
-
-          <ResetButton onClick={reset} />
-        </div>
-      </div>
+      <LeftScreen
+        pieces={pieces}
+        castlingConditions={castlingConditions}
+        passantPos={passantPos}
+        turn={turn}
+        piecesCollectedByWhite={piecesCollectedByWhite}
+        piecesCollectedByBlack={piecesCollectedByBlack}
+        reset={reset}
+      />
 
       <Board
         isBotRunning={isBotRunning}
