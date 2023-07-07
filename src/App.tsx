@@ -8,32 +8,15 @@ import clearPiecesHighlight from "./helpers/clearPiecesHighlight";
 import getMoveConditions from "./helpers/getMoveConditions";
 import initializeBoard from "./helpers/initializeBoard";
 import isMoveAvailable from "./helpers/isMoveAvailable";
-import { ICastlingConditions } from "./models/CastlingConditions";
 import { IPiece } from "./models/Piece";
 import getMoves from "./helpers/getMoves";
 import findBestMove from "./helpers/findBestMove";
 import checkCastlingConditions from "./helpers/checkCastlingConditions";
 import paintPossibleMoves from "./helpers/paintPossibleMoves";
 import paintCheck from "./helpers/paintCheck";
+import { defaultState } from "./models/defaultState";
 
-type MyComponentState = {
-  squares: IPiece[];
-  source: number;
-  turn: string;
-  trueTurn: string;
-  turnNum: number;
-  firstPos: number | null;
-  secondPos: number | null;
-  repetition: number;
-  castlingConditions: ICastlingConditions;
-  passantPos: number;
-  isBotRunning: boolean;
-  piecesCollectedByWhite: JSX.Element[];
-  piecesCollectedByBlack: JSX.Element[];
-  mated: boolean;
-};
-
-export default class Board extends React.Component<{}, MyComponentState> {
+export default class Board extends React.Component<{}, defaultState> {
   constructor(props: {}) {
     super(props);
     this.state = {
