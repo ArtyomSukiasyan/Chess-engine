@@ -2,7 +2,7 @@ import { ICastlingConditions } from "../../models/CastlingConditions";
 import { EPlayer } from "../../models/enums/Player.enum";
 import { IPiece } from "../../models/Piece";
 import clearPossibleHighlight from "./clearPossibleHighlight";
-import inCheck from "../gamoLogic/inCheck";
+import inCheck from "../gameLogic/inCheck";
 
 export default function paintCheck(
   pieces: IPiece[],

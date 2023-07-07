@@ -1,14 +1,14 @@
 import {
   bishopEvalBlack,
   bishopEvalWhite,
-} from "../constants/evaluates/bishop";
-import { kingEvalBlack, kingEvalWhite } from "../constants/evaluates/king";
-import { knightEval } from "../constants/evaluates/knight";
-import { pawnEvalBlack, pawnEvalWhite } from "../constants/evaluates/pawn";
-import { evalQueen } from "../constants/evaluates/queen";
-import { rookEvalBlack, rookEvalWhite } from "../constants/evaluates/rook";
-import { EPlayer } from "../models/enums/Player.enum";
-import { IPiece } from "../models/Piece";
+} from "../../constants/evaluates/bishop";
+import { kingEvalBlack, kingEvalWhite } from "../../constants/evaluates/king";
+import { knightEval } from "../../constants/evaluates/knight";
+import { pawnEvalBlack, pawnEvalWhite } from "../../constants/evaluates/pawn";
+import { evalQueen } from "../../constants/evaluates/queen";
+import { rookEvalBlack, rookEvalWhite } from "../../constants/evaluates/rook";
+import { EPlayer } from "../../models/enums/Player.enum";
+import { IPiece } from "../../models/Piece";
 
 export default function getPieceValue(piece: IPiece, position: number) {
   let pieceValue = 0;

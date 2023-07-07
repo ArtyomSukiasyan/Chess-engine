@@ -1,4 +1,4 @@
-import { IPiece } from "../models/Piece";
+import { IPiece } from "../../models/Piece";
 import getPieceValue from "./getPieceValue";
 
 export default function evaluateBlack(pieces: IPiece[]) {

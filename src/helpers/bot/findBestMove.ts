@@ -1,6 +1,6 @@
-import { ICastlingConditions } from "../models/CastlingConditions";
-import { IPiece } from "../models/Piece";
-import makeMove from "./gamoLogic/makeMove";
+import { ICastlingConditions } from "../../models/CastlingConditions";
+import { IPiece } from "../../models/Piece";
+import makeMove from "../gameLogic/makeMove";
 import minimax from "./minimax";
 
 export default function findBestMove(

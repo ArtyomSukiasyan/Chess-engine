@@ -1,6 +1,6 @@
-import checkmate from "../helpers/gamoLogic/checkmate";
-import inCheck from "../helpers/gamoLogic/inCheck";
-import stalemate from "../helpers/gamoLogic/stalemate";
+import checkmate from "../helpers/gameLogic/checkmate";
+import inCheck from "../helpers/gameLogic/inCheck";
+import stalemate from "../helpers/gameLogic/stalemate";
 import { EPlayer } from "../models/enums/Player.enum";
 import { IMateWrapper } from "../models/MateWrapper";
 
