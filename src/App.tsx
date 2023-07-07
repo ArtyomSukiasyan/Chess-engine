@@ -42,10 +42,6 @@ export default class Game extends React.Component<{}, defaultState> {
   }
 
   reset() {
-    if (this.state.turn === "b" && !this.state.mated) {
-      return "cannot reset";
-    }
-
     this.setState({
       pieces: initializeBoard(),
       source: -1,
