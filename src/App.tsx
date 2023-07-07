@@ -2,7 +2,6 @@ import React from "react";
 import "./App.css";
 import MatchInfo from "./components/MatchInfo";
 import Square from "./components/Square";
-import { colNumbers, rowNumbers } from "./constants/colNumbersAndRowNumbers";
 import clearPiecesHighlight from "./helpers/clearPiecesHighlight";
 import getMoveConditions from "./helpers/getMoveConditions";
 import initializeBoard from "./helpers/initializeBoard";
@@ -15,8 +14,9 @@ import paintPossibleMoves from "./helpers/paintPossibleMoves";
 import paintCheck from "./helpers/paintCheck";
 import { defaultState } from "./models/defaultState";
 import getSquareClasses from "./helpers/getSquareClasses";
+import Board from "./components/Board";
 
-export default class Board extends React.Component<{}, defaultState> {
+export default class Game extends React.Component<{}, defaultState> {
   constructor(props: {}) {
     super(props);
     this.state = {
@@ -260,7 +260,7 @@ export default class Board extends React.Component<{}, defaultState> {
           />
         );
       }
-      
+
       board.push(<div key={i}>{squareRows}</div>);
     }
 
@@ -285,11 +285,7 @@ export default class Board extends React.Component<{}, defaultState> {
           </div>
         </div>
 
-        <div className="right_screen">
-          <div className="row_label"> {rowNumbers} </div>
-          <div className="table"> {board} </div>
-          <div className="col_label"> {colNumbers} </div>
-        </div>
+        <Board board={board} />
       </div>
     );
   }
