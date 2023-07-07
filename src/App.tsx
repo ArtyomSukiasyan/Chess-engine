@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 import Collected from "./components/Collection";
-import MateWrapper from "./components/MateWrapper";
+import MatchInfo from "./components/MatchInfo";
 import Square from "./components/Square";
 import { colNumbers, rowNumbers } from "./constants/colNumbersAndRowNumbers";
 import calcSquareColor from "./helpers/calcSquareColor";
@@ -555,59 +555,27 @@ export default class Board extends React.Component<{}, MyComponentState> {
     }
 
     return (
-      <div className="bounceInDown">
-        <div className="left_screen bounceInDown">
+      <div>
+        <div className="left_screen ">
           <div className="side_box">
-            <div className="content">
-              <p className="header_font">ReactJS Chess</p>
-              <p className="medium_font">Play against our friendly bot!</p>
-            </div>
-          </div>
-
-          <div className="side_box">
-            <div className="content title">
-              <p className="header_2_font">Match Information</p>
-            </div>
-
-            <div className="wrapper">
-              <div className="player_box">
-                <p className="medium_font">White (You)</p>
-                {this.state.piecesCollectedByWhite}
-              </div>
-              <div className="player_box black_player_color">
-                <p className="medium_font">Black (Bot)</p>
-                {this.state.piecesCollectedByBlack}
-              </div>
-            </div>
-            <div className="wrapper">
-              {this.state.turn === "w" ? (
-                <div className="highlight_box"></div>
-              ) : (
-                <div className="highlight_box transparent"></div>
-              )}
-              {this.state.turn === "b" ? (
-                <div className="highlight_box"></div>
-              ) : (
-                <div className="highlight_box transparent"></div>
-              )}
-            </div>
+            <MatchInfo
+              pieces={this.state.squares}
+              castlingConditions={this.state.castlingConditions}
+              passantPos={this.state.passantPos}
+              turn={this.state.turn}
+              piecesCollectedByWhite={this.state.piecesCollectedByWhite}
+              piecesCollectedByBlack={this.state.piecesCollectedByBlack}
+            />
 
             <div className="button_wrapper">
               <button className="reset_button" onClick={() => this.reset()}>
                 <p className="button_font">Restart Game</p>
               </button>
             </div>
-
-            <MateWrapper
-              pieces={this.state.squares}
-              castlingConditions={this.state.castlingConditions}
-              passantPos={this.state.passantPos}
-              turn={this.state.turn}
-            />
           </div>
         </div>
 
-        <div className="right_screen bounceInDown">
+        <div className="right_screen">
           <div className="row_label"> {rowNumbers} </div>
           <div className="table"> {board} </div>
           <div className="col_label"> {colNumbers} </div>
