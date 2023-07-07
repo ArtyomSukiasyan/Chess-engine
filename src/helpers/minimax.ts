@@ -50,7 +50,7 @@ export default function minimax(
             statePassantPos,
             passantPos
           );
-          let passant = 65;
+          let passant = -1;
           if (
             testSquares[end].ascii === (isBlackPlayer ? "P" : "p") &&
             start >= (isBlackPlayer ? 8 : 48) &&

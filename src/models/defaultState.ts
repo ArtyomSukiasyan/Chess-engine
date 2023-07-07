@@ -5,8 +5,8 @@ export type defaultState = {
   squares: IPiece[];
   source: number;
   turn: string;
-  firstPos: number | null;
-  secondPos: number | null;
+  firstPos: number;
+  secondPos: number;
   repetition: number;
   castlingConditions: ICastlingConditions;
   passantPos: number;

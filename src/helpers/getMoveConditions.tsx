@@ -52,7 +52,7 @@ export default function getMoveConditions(
         start >= 8 &&
         start <= 15 &&
         end - start === 16;
-  const passant = passantTrue ? end : 65;
+  const passant = passantTrue ? end : -1;
 
   const isWhiteMated = checkmate("w", pieces, passantPos, castlingConditions);
   const isBlackMated = checkmate("b", pieces, passantPos, castlingConditions);

@@ -6,8 +6,8 @@ import minimax from "./minimax";
 export default function findBestMove(
   moves: number[],
   repetition: number,
-  firstPos: number | null,
-  secondPos: number | null,
+  firstPos: number,
+  secondPos: number,
   pieces: IPiece[],
   statePassantPos: number,
   depth: number,
@@ -35,7 +35,7 @@ export default function findBestMove(
 
       const testSquares_2 = makeMove(testSquares, start, end, statePassantPos);
 
-      let passantPos = 65;
+      let passantPos = -1;
 
       const isBlackPawn = testSquares[start].ascii === "P";
 
