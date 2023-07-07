@@ -1,4 +1,4 @@
-import { IPiece } from "../models/Piece";
+import { IPiece } from "../../models/Piece";
 
 export default function blockersExist(
   start: number,

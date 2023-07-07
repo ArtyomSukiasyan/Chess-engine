@@ -3,7 +3,7 @@ import { useState } from "react";
 import "./App.css";
 import clearPiecesHighlight from "./helpers/UI/clearPiecesHighlight";
 import getMoveConditions from "./helpers/gameLogic/getMoveConditions";
-import initializeBoard from "./helpers/initializeBoard";
+import initializeBoard from "./helpers/board/initializeBoard";
 import isMoveAvailable from "./helpers/gameLogic/isMoveAvailable";
 import { IPiece } from "./models/Piece";
 import getMoves from "./helpers/bot/getMoves";

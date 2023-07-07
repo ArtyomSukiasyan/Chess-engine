@@ -1,11 +1,11 @@
-import { EPlayer } from "../models/enums/Player.enum";
-import Bishop from "../pieces/Bishop";
-import FillerPiece from "../pieces/FillerPiece";
-import King from "../pieces/King";
-import Knight from "../pieces/Knight";
-import Pawn from "../pieces/Pawn";
-import Queen from "../pieces/Queen";
-import Rook from "../pieces/Rook";
+import { EPlayer } from "../../models/enums/Player.enum";
+import Bishop from "../../pieces/Bishop";
+import FillerPiece from "../../pieces/FillerPiece";
+import King from "../../pieces/King";
+import Knight from "../../pieces/Knight";
+import Pawn from "../../pieces/Pawn";
+import Queen from "../../pieces/Queen";
+import Rook from "../../pieces/Rook";
 
 export default function initializeBoard() {
   const squares = Array(64).fill(null);

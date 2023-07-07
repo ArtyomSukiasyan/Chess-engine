@@ -1,6 +1,6 @@
 import { ICastlingConditions } from "../../models/CastlingConditions";
 import { IPiece } from "../../models/Piece";
-import blockersExist from "../blockersExist";
+import blockersExist from "../board/blockersExist";
 import canEnpassant from "./canEnpassant";
 import castlingAllowed from "./castlingAllowed";
 
