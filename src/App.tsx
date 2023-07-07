@@ -34,14 +34,6 @@ type MyComponentState = {
   isBotRunning: boolean;
   piecesCollectedByWhite: JSX.Element[];
   piecesCollectedByBlack: JSX.Element[];
-  history: IPiece[][];
-  historyNum: number;
-  historyH1: number[];
-  historyH2: number[];
-  historyH3: any[];
-  historyH4: any[];
-  historyWhiteCollection: any[];
-  historyBlackCollection: any[];
   mated: boolean;
 };
 
@@ -69,21 +61,12 @@ export default class Board extends React.Component<{}, MyComponentState> {
       isBotRunning: false,
       piecesCollectedByWhite: [],
       piecesCollectedByBlack: [],
-      history: [initializeBoard()],
-      historyNum: 1,
-      historyH1: [],
-      historyH2: [],
-      historyH3: [],
-      historyH4: [],
-      historyWhiteCollection: [],
-      historyBlackCollection: [],
       mated: false,
     };
   }
 
   reset() {
-    const isSameNum = this.state.historyNum - 1 === this.state.turnNum;
-    if (isSameNum && this.state.turn === "b" && !this.state.mated) {
+    if (this.state.turn === "b" && !this.state.mated) {
       return "cannot reset";
     }
 
@@ -108,14 +91,6 @@ export default class Board extends React.Component<{}, MyComponentState> {
       isBotRunning: false,
       piecesCollectedByWhite: [],
       piecesCollectedByBlack: [],
-      history: [initializeBoard()],
-      historyNum: 1,
-      historyH1: [0],
-      historyH2: [0],
-      historyH3: [null],
-      historyH4: [null],
-      historyWhiteCollection: [],
-      historyBlackCollection: [],
       mated: false,
     });
   }
@@ -259,38 +234,6 @@ export default class Board extends React.Component<{}, MyComponentState> {
       ).slice();
     }
 
-    const copyHistory = this.state.history.slice();
-    const copyHistoryH1 = this.state.historyH1.slice();
-    const copyHistoryH2 = this.state.historyH2.slice();
-    const copyHistoryH3 = this.state.historyH3.slice();
-    const copyHistoryH4 = this.state.historyH4.slice();
-    const copyWhiteCollection = this.state.historyWhiteCollection.slice();
-    const copyBlackCollection = this.state.historyBlackCollection.slice();
-    copyHistory.push(squares);
-    copyHistoryH1.push(start);
-    copyHistoryH2.push(end);
-    copyWhiteCollection.push(
-      player === "w" ? collection : this.state.piecesCollectedByWhite
-    );
-    copyBlackCollection.push(
-      player === "b" ? collection : this.state.piecesCollectedByBlack
-    );
-
-    const isKing = squares[end].ascii === "k" || squares[end].ascii === "K";
-
-    if (isKing && Math.abs(end - start) === 2) {
-      if (end === (squares[end].ascii === "k" ? 62 : 6)) {
-        copyHistoryH3.push(end - 1);
-        copyHistoryH4.push(end + 1);
-      } else if (end === (squares[end].ascii === "k" ? 58 : 2)) {
-        copyHistoryH3.push(end + 1);
-        copyHistoryH4.push(end - 2);
-      }
-    } else {
-      copyHistoryH3.push(null);
-      copyHistoryH4.push(null);
-    }
-
     let checkMated =
       checkmate(
         "w",
@@ -322,14 +265,6 @@ export default class Board extends React.Component<{}, MyComponentState> {
 
     this.setState({
       passantPos: passant,
-      history: copyHistory,
-      historyNum: this.state.historyNum + 1,
-      historyH1: copyHistoryH1,
-      historyH2: copyHistoryH2,
-      historyH3: copyHistoryH3,
-      historyH4: copyHistoryH4,
-      historyWhiteCollection: copyWhiteCollection,
-      historyBlackCollection: copyBlackCollection,
       squares: squares,
       source: -1,
       turnNum: this.state.turnNum + 1,
@@ -467,10 +402,6 @@ export default class Board extends React.Component<{}, MyComponentState> {
   handleClick(i: number) {
     let copySquares = this.state.squares.slice();
 
-    if (this.state.historyNum - 1 !== this.state.turnNum) {
-      return "currently viewing history";
-    }
-
     if (this.state.mated) {
       return "game-over";
     }
@@ -572,139 +503,6 @@ export default class Board extends React.Component<{}, MyComponentState> {
     }
   }
 
-  viewHistory(direction: string) {
-    const isSameNum = this.state.historyNum - 1 === this.state.turnNum;
-
-    if (isSameNum && this.state.turn === "b" && !this.state.mated) {
-      return "not allowed to view history";
-    }
-
-    let copySquares = [];
-    let copyWhiteCollection = null;
-    let copyBlackCollection = null;
-
-    if (direction === "back_atw") {
-      copySquares = this.state.history[0].slice();
-      copyWhiteCollection = [];
-      copyBlackCollection = [];
-    } else if (
-      direction === "next_atw" &&
-      this.state.historyNum < this.state.turnNum + 1
-    ) {
-      copySquares = this.state.history[this.state.turnNum].slice();
-      copyWhiteCollection =
-        this.state.historyWhiteCollection[this.state.turnNum];
-      copyBlackCollection =
-        this.state.historyBlackCollection[this.state.turnNum];
-    } else if (direction === "back" && this.state.historyNum - 2 >= 0) {
-      copySquares = this.state.history[this.state.historyNum - 2].slice();
-      copyWhiteCollection =
-        this.state.historyWhiteCollection[this.state.historyNum - 2];
-      copyBlackCollection =
-        this.state.historyBlackCollection[this.state.historyNum - 2];
-    } else if (
-      direction === "next" &&
-      this.state.historyNum <= this.state.turnNum
-    ) {
-      copySquares = this.state.history[this.state.historyNum].slice();
-      copyWhiteCollection =
-        this.state.historyWhiteCollection[this.state.historyNum];
-      copyBlackCollection =
-        this.state.historyBlackCollection[this.state.historyNum];
-    } else {
-      return "no more history";
-    }
-
-    copySquares = clearPossibleHighlight(copySquares);
-    copySquares = clearHighlight(copySquares);
-
-    for (let j = 0; j < 64; j++) {
-      if (copySquares[j].ascii === (this.state.turn === "w" ? "k" : "K")) {
-        copySquares[j].inCheck = false;
-        copySquares[j].checked = false;
-
-        break;
-      }
-    }
-
-    const isStaleMate = stalemate(
-      this.state.trueTurn,
-      copySquares,
-      this.state.passantPos,
-      this.state.castlingConditions
-    );
-
-    const stale = isStaleMate && this.state.turn !== this.state.trueTurn;
-
-    const isCheckMate = checkmate(
-      this.state.trueTurn,
-      copySquares,
-      this.state.passantPos,
-      this.state.castlingConditions
-    );
-
-    copySquares = highlightMate(
-      this.state.trueTurn,
-      copySquares,
-      isCheckMate,
-      stale
-    );
-
-    let index = null;
-
-    if (direction === "back") {
-      index = this.state.historyNum - 2;
-    } else if (direction === "next") {
-      index = this.state.historyNum;
-    } else if (direction === "next_atw") {
-      index = this.state.turnNum;
-    }
-
-    if (index !== 0 && index !== null) {
-      if (this.state.historyH1[index] !== null) {
-        copySquares[this.state.historyH1[index]].highlight = true;
-        copySquares[this.state.historyH2[index]].highlight = true;
-      }
-      if (this.state.historyH3[index] != null) {
-        copySquares[this.state.historyH3[index]].highlight = true;
-        copySquares[this.state.historyH4[index]].highlight = true;
-      }
-    }
-
-    let newHistoryNum =
-      direction === "back"
-        ? this.state.historyNum - 1
-        : this.state.historyNum + 1;
-
-    if (direction === "back_atw") {
-      newHistoryNum = 1;
-    }
-
-    if (direction === "next_atw") {
-      newHistoryNum = this.state.turnNum + 1;
-    }
-
-    this.setState({
-      squares: copySquares,
-      historyNum: newHistoryNum,
-      turn: this.state.turn === "w" ? "b" : "w",
-      piecesCollectedByWhite:
-        copyWhiteCollection !== null
-          ? copyWhiteCollection
-          : this.state.piecesCollectedByWhite,
-      piecesCollectedByBlack:
-        copyBlackCollection !== null
-          ? copyBlackCollection
-          : this.state.piecesCollectedByBlack,
-    });
-
-    if (direction === "back_atw" || direction === "next_atw") {
-      this.setState({
-        turn: direction === "back_atw" ? "w" : this.state.trueTurn,
-      });
-    }
-  }
-
   render() {
     const board = [];
 
@@ -739,10 +537,6 @@ export default class Board extends React.Component<{}, MyComponentState> {
 
         if (this.state.mated) {
           squareCursor = "default";
-        }
-
-        if (this.state.historyNum - 1 !== this.state.turnNum) {
-          squareCursor = "not_allowed";
         }
 
         squareRows.push(
@@ -798,32 +592,8 @@ export default class Board extends React.Component<{}, MyComponentState> {
             </div>
 
             <div className="button_wrapper">
-              <button
-                className="reset_button history"
-                onClick={() => this.viewHistory("back_atw")}
-              >
-                <p className="button_font">&lt;&lt;</p>
-              </button>
-              <button
-                className="reset_button history"
-                onClick={() => this.viewHistory("back")}
-              >
-                <p className="button_font">&lt;</p>
-              </button>
               <button className="reset_button" onClick={() => this.reset()}>
                 <p className="button_font">Restart Game</p>
-              </button>
-              <button
-                className="reset_button history"
-                onClick={() => this.viewHistory("next")}
-              >
-                <p className="button_font">&gt;</p>
-              </button>
-              <button
-                className="reset_button history"
-                onClick={() => this.viewHistory("next_atw")}
-              >
-                <p className="button_font">&gt;&gt;</p>
               </button>
             </div>
 
