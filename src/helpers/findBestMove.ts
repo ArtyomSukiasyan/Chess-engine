@@ -18,6 +18,7 @@ export default function findBestMove(
   let randStart = 100;
   let randEnd = 100;
   let bestValue = -9999;
+  let newRepetition;
 
   for (let i = 0; i < moves.length; i += 2) {
     let start = moves[i];
@@ -28,7 +29,7 @@ export default function findBestMove(
     const isSameEnd = end === firstPos;
 
     if (isMore2Repetition && isSameStart && isSameEnd) {
-      repetition = 0;
+      newRepetition = 0;
     } else {
       const testSquares = pieces.slice();
 
@@ -68,10 +69,10 @@ export default function findBestMove(
 
   if (isSameStart && isSameEnd) {
     let reps = repetition + 1;
-    repetition = reps;
+    newRepetition = reps;
   } else {
-    repetition = 0;
+    newRepetition = 0;
   }
 
-  return { randStart, randEnd, repetition };
+  return { randStart, randEnd, newRepetition };
 }

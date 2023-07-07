@@ -131,7 +131,7 @@ export default class Game extends React.Component<{}, defaultState> {
       this.state.castlingConditions
     );
 
-    const { randStart, randEnd, repetition } = findBestMove(
+    const { randStart, randEnd, newRepetition } = findBestMove(
       moves,
       this.state.repetition,
       this.state.firstPos,
@@ -145,7 +145,7 @@ export default class Game extends React.Component<{}, defaultState> {
     );
 
     this.setState({
-      repetition: repetition,
+      repetition: newRepetition,
     });
     this.executeMove("b", squares, randStart, randEnd);
   }
