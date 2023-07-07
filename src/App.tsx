@@ -4,11 +4,8 @@ import MatchInfo from "./components/MatchInfo";
 import Square from "./components/Square";
 import { colNumbers, rowNumbers } from "./constants/colNumbersAndRowNumbers";
 import calcSquareColor from "./helpers/calcSquareColor";
-import clearCheckHighlight from "./helpers/clearCheckHighlight";
-import clearPossibleHighlight from "./helpers/clearPossibleHighlight";
 import clearPiecesHighlight from "./helpers/clearPiecesHighlight";
 import getMoveConditions from "./helpers/getMoveConditions";
-import inCheck from "./helpers/inCheck";
 import initializeBoard from "./helpers/initializeBoard";
 import isMoveAvailable from "./helpers/isMoveAvailable";
 import { ICastlingConditions } from "./models/CastlingConditions";
@@ -16,6 +13,8 @@ import { IPiece } from "./models/Piece";
 import getMoves from "./helpers/getMoves";
 import findBestMove from "./helpers/findBestMove";
 import checkCastlingConditions from "./helpers/checkCastlingConditions";
+import paintPossibleMoves from "./helpers/paintPossibleMoves";
+import paintCheck from "./helpers/paintCheck";
 
 type MyComponentState = {
   squares: IPiece[];
@@ -180,25 +179,16 @@ export default class Board extends React.Component<{}, MyComponentState> {
 
     if (this.state.source === -1 && this.state.isBotRunning === false) {
       if (copySquares[i].player !== this.state.turn) {
-        return -1;
+        return;
       }
 
       if (copySquares[i].player !== null) {
-        copySquares = clearCheckHighlight(copySquares, "w").slice();
-        copySquares[i].highlight = true;
-
-        for (let j = 0; j < 64; j++) {
-          if (
-            isMoveAvailable(
-              i,
-              j,
-              copySquares,
-              this.state.passantPos,
-              this.state.castlingConditions
-            )
-          )
-            copySquares[j].possible = true;
-        }
+        copySquares = paintPossibleMoves(
+          copySquares,
+          i,
+          this.state.passantPos,
+          this.state.castlingConditions
+        );
 
         this.setState({
           source: i,
@@ -208,57 +198,40 @@ export default class Board extends React.Component<{}, MyComponentState> {
     }
 
     if (this.state.source > -1) {
-      const cannibalism = copySquares[i].player === this.state.turn;
+      const isCannibalism = copySquares[i].player === this.state.turn;
 
-      if (cannibalism && this.state.source !== i) {
-        copySquares[i].highlight = true;
+      if (isCannibalism && this.state.source !== i) {
         copySquares[this.state.source].highlight = false;
-        copySquares = clearPossibleHighlight(copySquares);
 
-        for (let j = 0; j < 64; j++) {
-          if (
-            isMoveAvailable(
-              i,
-              j,
-              copySquares,
-              this.state.passantPos,
-              this.state.castlingConditions
-            )
-          )
-            copySquares[j].possible = true;
-        }
+        copySquares = paintPossibleMoves(
+          copySquares,
+          i,
+          this.state.passantPos,
+          this.state.castlingConditions
+        );
+
         this.setState({
           source: i,
           squares: copySquares,
         });
       } else {
-        if (
-          !isMoveAvailable(
-            this.state.source,
-            i,
+        const availableSquare = isMoveAvailable(
+          this.state.source,
+          i,
+          copySquares,
+          this.state.passantPos,
+          this.state.castlingConditions
+        );
+
+        if (!availableSquare) {
+          copySquares = paintCheck(
             copySquares,
+            i,
+            this.state.source,
             this.state.passantPos,
             this.state.castlingConditions
-          )
-        ) {
-          copySquares[this.state.source].highlight = false;
-          copySquares = clearPossibleHighlight(copySquares).slice();
-          if (
-            i !== this.state.source &&
-            inCheck(
-              "w",
-              copySquares,
-              this.state.passantPos,
-              this.state.castlingConditions
-            )
-          ) {
-            for (let j = 0; j < 64; j++) {
-              if (copySquares[j].ascii === "k") {
-                copySquares[j].inCheck = true;
-                break;
-              }
-            }
-          }
+          );
+
           this.setState({
             source: -1,
             squares: copySquares,
