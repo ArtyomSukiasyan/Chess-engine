@@ -5,30 +5,30 @@ export default function blockersExist(
   end: number,
   pieces: IPiece[]
 ) {
-  const startRow = 8 - Math.floor(start / 8);
-  const startCol = (start % 8) + 1;
-  const endRow = 8 - Math.floor(end / 8);
-  const endCol = (end % 8) + 1;
+  const startRow = getRowByPosition(start);
+  const startCol = getColByPosition(start);
+  const endRow = getRowByPosition(end);
+  const endCol = getColByPosition(end);
 
   let rowDiff = endRow - startRow;
   let colDiff = endCol - startCol;
   let rowCtr = 0;
   let colCtr = 0;
 
+  const currentRow = startRow * 8;
+  const rowBorder = 64 - currentRow;
+
   while (colCtr !== colDiff || rowCtr !== rowDiff) {
-    const position = 64 - startRow * 8 + -8 * rowCtr + (startCol - 1 + colCtr);
+    const currentRowCtr = 8 * rowCtr;
+    const colBorder = startCol - 1 + colCtr - currentRowCtr;
+
+    const position = rowBorder + colBorder;
     const isValidPiece = pieces[position].ascii !== null;
+    
+    const isSamePosition = pieces[position] !== pieces[start];
 
-    if (isValidPiece && pieces[position] !== pieces[start]) {
+    if (isValidPiece && isSamePosition) {
       return true;
-    }
-
-    if (colCtr !== colDiff) {
-      if (colDiff > 0) {
-        ++colCtr;
-      } else {
-        --colCtr;
-      }
     }
 
     if (rowCtr !== rowDiff) {
@@ -38,7 +38,23 @@ export default function blockersExist(
         --rowCtr;
       }
     }
+
+    if (colCtr !== colDiff) {
+      if (colDiff > 0) {
+        ++colCtr;
+      } else {
+        --colCtr;
+      }
+    }
   }
 
   return false;
+}
+
+function getRowByPosition(position: number) {
+  return 8 - Math.floor(position / 8);
+}
+
+function getColByPosition(position: number) {
+  return (position % 8) + 1;
 }
