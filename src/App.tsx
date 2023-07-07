@@ -3,7 +3,6 @@ import "./App.css";
 import MatchInfo from "./components/MatchInfo";
 import Square from "./components/Square";
 import { colNumbers, rowNumbers } from "./constants/colNumbersAndRowNumbers";
-import calcSquareColor from "./helpers/calcSquareColor";
 import clearPiecesHighlight from "./helpers/clearPiecesHighlight";
 import getMoveConditions from "./helpers/getMoveConditions";
 import initializeBoard from "./helpers/initializeBoard";
@@ -15,6 +14,7 @@ import checkCastlingConditions from "./helpers/checkCastlingConditions";
 import paintPossibleMoves from "./helpers/paintPossibleMoves";
 import paintCheck from "./helpers/paintCheck";
 import { defaultState } from "./models/defaultState";
+import getSquareClasses from "./helpers/getSquareClasses";
 
 export default class Board extends React.Component<{}, defaultState> {
   constructor(props: {}) {
@@ -240,39 +240,19 @@ export default class Board extends React.Component<{}, defaultState> {
       const squareRows = [];
 
       for (let j = 0; j < 8; j++) {
-        let squareCorner = null;
-        if (i === 0 && j === 0) {
-          squareCorner = " top_left_square ";
-        } else if (i === 0 && j === 7) {
-          squareCorner = " top_right_square ";
-        } else if (i === 7 && j === 0) {
-          squareCorner = " bottom_left_square ";
-        } else if (i === 7 && j === 7) {
-          squareCorner = " bottom_right_square ";
-        } else {
-          squareCorner = " ";
-        }
-
-        const copySquares = this.state.squares.slice();
-        let squareColor = calcSquareColor(i, j, copySquares);
-        let squareCursor = "pointer";
-
-        if (copySquares[i * 8 + j].player !== "w") {
-          squareCursor = "default";
-        }
-
-        if (this.state.isBotRunning && !this.state.mated) {
-          squareCursor = "isBotRunning";
-        }
-
-        if (this.state.mated) {
-          squareCursor = "default";
-        }
+        const { squareColor, squareCorner, squareCursor, pieces } =
+          getSquareClasses(
+            i,
+            j,
+            this.state.squares,
+            this.state.isBotRunning,
+            this.state.mated
+          );
 
         squareRows.push(
           <Square
             key={i * 8 + j}
-            value={copySquares[i * 8 + j]}
+            value={pieces[i * 8 + j]}
             color={squareColor}
             corner={squareCorner}
             cursor={squareCursor}
@@ -280,6 +260,7 @@ export default class Board extends React.Component<{}, defaultState> {
           />
         );
       }
+      
       board.push(<div key={i}>{squareRows}</div>);
     }
 
