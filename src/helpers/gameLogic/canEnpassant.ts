@@ -1,5 +1,6 @@
 import { EPlayer } from "../../models/enums/Player.enum";
 import { IPiece } from "../../models/Piece";
+import { getColByPosition, getRowByPosition } from "../getRowAndCallPosition";
 
 export default function canEnpassant(
   start: number,
@@ -8,11 +9,11 @@ export default function canEnpassant(
   statePassantPos: number,
   passantPos?: number
 ): boolean {
-  let passant = passantPos === undefined ? statePassantPos : passantPos;
-  let startRow = 8 - Math.floor(start / 8);
-  let startCol = (start % 8) + 1;
-  let endRow = 8 - Math.floor(end / 8);
-  let endCol = (end % 8) + 1;
+  let passant = passantPos ? passantPos : statePassantPos;
+  let startRow = getRowByPosition(start);
+  let startCol = getColByPosition(start);
+  let endRow = getRowByPosition(end);
+  let endCol = getColByPosition(end);
   let rowDiff = endRow - startRow;
   let colDiff = endCol - startCol;
 

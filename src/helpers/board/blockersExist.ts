@@ -1,4 +1,5 @@
 import { IPiece } from "../../models/Piece";
+import { getColByPosition, getRowByPosition } from "../getRowAndCallPosition";
 
 export default function blockersExist(
   start: number,
@@ -24,7 +25,7 @@ export default function blockersExist(
 
     const position = rowBorder + colBorder;
     const isValidPiece = pieces[position].ascii !== null;
-    
+
     const isSamePosition = pieces[position] !== pieces[start];
 
     if (isValidPiece && isSamePosition) {
@@ -49,12 +50,4 @@ export default function blockersExist(
   }
 
   return false;
-}
-
-function getRowByPosition(position: number) {
-  return 8 - Math.floor(position / 8);
-}
-
-function getColByPosition(position: number) {
-  return (position % 8) + 1;
 }
