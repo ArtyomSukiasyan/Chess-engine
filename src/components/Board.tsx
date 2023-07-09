@@ -15,15 +15,19 @@ export default function Board({
     const squareRows = [];
 
     for (let j = 0; j < 8; j++) {
-      const { squareColor, squareCorner, squareCursor, pieces } =
-        getSquareClasses(i, j, statePieces, isBotRunning, mated);
+      const { squareColor, squareCursor, pieces } = getSquareClasses(
+        i,
+        j,
+        statePieces,
+        isBotRunning,
+        mated
+      );
 
       squareRows.push(
         <Square
           key={i * 8 + j}
           value={pieces[i * 8 + j]}
           color={squareColor}
-          corner={squareCorner}
           cursor={squareCursor}
           onClick={() => onClick(i * 8 + j)}
         />

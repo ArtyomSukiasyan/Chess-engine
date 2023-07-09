@@ -247,22 +247,6 @@ html {
   background-color: #b58863;
 }
 
-.top_left_square {
-  border-radius: 8px 0px 0px 0px;
-}
-
-.top_right_square {
-  border-radius: 0px 8px 0px 0px;
-}
-
-.bottom_left_square {
-  border-radius: 0px 0px 0px 8px;
-}
-
-.bottom_right_square {
-  border-radius: 0px 0px 8px 0px;
-}
-
 .selected_white_square {
   background-color: #00e686;
 }

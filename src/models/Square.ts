@@ -5,6 +5,5 @@ export interface ISquare {
   value: IPiece;
   color: string;
   cursor: string;
-  corner: string;
   onClick: MouseEventHandler<HTMLButtonElement>;
 }

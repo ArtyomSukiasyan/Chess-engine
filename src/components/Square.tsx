@@ -1,14 +1,8 @@
 import { ISquare } from "../models/Square";
 
-export default function Square({
-  value,
-  color,
-  corner,
-  cursor,
-  onClick,
-}: ISquare) {
+export default function Square({ value, color, cursor, onClick }: ISquare) {
   return (
-    <button className={`square ${color} ${corner} ${cursor}`} onClick={onClick}>
+    <button className={`square ${color}  ${cursor}`} onClick={onClick}>
       {value && value.icon}
     </button>
   );

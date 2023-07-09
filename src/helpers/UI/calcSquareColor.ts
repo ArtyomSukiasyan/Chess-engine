@@ -8,31 +8,32 @@ export default function calcSquareColor(
 ) {
   const isEvenValues = isEven(i) && isEven(j);
   const isNotEvenValues = !isEven(i) && !isEven(j);
-  const checkedPiece = pieces[i * 8 + j];
+  const isWhiteSquare = isEvenValues || isNotEvenValues;
 
-  let squareColor =
-    isEvenValues || isNotEvenValues ? "white_square" : "black_square";
+  const checkedPiece = pieces[i * 8 + j];
+  const isWhiteKing = checkedPiece.ascii === EPieceAsciis.whiteKing;
+  const isBlackKing = checkedPiece.ascii === EPieceAsciis.blackKing;
+  const isKing = isWhiteKing || isBlackKing;
+
+  let squareColor = isWhiteSquare ? "white_square" : "black_square";
 
   if (checkedPiece.highlight) {
-    squareColor =
-      isEvenValues || isNotEvenValues
-        ? "selected_white_square"
-        : "selected_black_square";
+    squareColor = isWhiteSquare
+      ? "selected_white_square"
+      : "selected_black_square";
   }
 
   if (checkedPiece.possible) {
-    squareColor =
-      isEvenValues || isNotEvenValues
-        ? "highlighted_white_square"
-        : "highlighted_black_square";
+    squareColor = isWhiteSquare
+      ? "highlighted_white_square"
+      : "highlighted_black_square";
   }
 
-  if (checkedPiece.ascii !== null && checkedPiece.ascii.toLowerCase() === EPieceAsciis.whiteKing) {
+  if (checkedPiece.ascii !== null && isKing) {
     if (checkedPiece.inCheck) {
-      squareColor =
-        isEvenValues || isNotEvenValues
-          ? "in_check_square_white"
-          : "in_check_square_black";
+      squareColor = isWhiteSquare
+        ? "in_check_square_white"
+        : "in_check_square_black";
     }
 
     if (checkedPiece.checked) {
