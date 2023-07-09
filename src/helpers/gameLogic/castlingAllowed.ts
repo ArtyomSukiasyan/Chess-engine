@@ -17,7 +17,8 @@ export default function castlingAllowed(
   }
 
   const deltaPos = endPosition - startPosition;
-  const rookASCII = player === EPlayer.white ? EPieceAsciis.whiteRook : EPieceAsciis.blackRook;
+  const rookASCII =
+    player === EPlayer.white ? EPieceAsciis.whiteRook : EPieceAsciis.blackRook;
 
   const kingASCII =
     deltaPos === 2

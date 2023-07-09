@@ -4,6 +4,7 @@ import { IPiece } from "../../models/Piece";
 import evaluateBlack from "./evaluateBlack";
 import isMoveAvailable from "../gameLogic/isMoveAvailable";
 import makeMove from "../gameLogic/makeMove";
+import { EPieceAsciis } from "../../models/enums/PieceAsciis.enum";
 
 export default function minimax(
   depth: number,
@@ -57,7 +58,7 @@ export default function minimax(
 
           let passant = -1;
 
-          const playerASCII = isBlackPlayer ? "P" : "p";
+          const playerASCII = isBlackPlayer ? EPieceAsciis.blackPawn : EPieceAsciis.whitePawn;
           const isSamePlayer = testSquares[end].ascii === playerASCII;
 
           const pawnJumpValue = isBlackPlayer ? 16 : -16;

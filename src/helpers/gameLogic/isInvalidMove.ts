@@ -17,7 +17,7 @@ export default function isInvalidMove(
     pieces[start].ascii?.toLowerCase() === EPieceAsciis.whiteRook ||
     pieces[start].ascii?.toLowerCase() === EPieceAsciis.whiteQueen ||
     pieces[start].ascii?.toLowerCase() === "b" ||
-    pieces[start].ascii?.toLowerCase() === "p" ||
+    pieces[start].ascii?.toLowerCase() === EPieceAsciis.whitePawn ||
     pieces[start].ascii?.toLowerCase() === EPieceAsciis.whiteKing;
 
   let invalid = isValidPieces && blockersExist(start, end, pieces);
@@ -26,7 +26,7 @@ export default function isInvalidMove(
     return invalid;
   }
 
-  const pawn = pieces[start].ascii?.toLowerCase() === "p";
+  const pawn = pieces[start].ascii?.toLowerCase() === EPieceAsciis.whitePawn;
 
   invalid =
     pawn && !canEnpassant(start, end, pieces, statePassantPos, passant_pos);

@@ -1,3 +1,4 @@
+import { EPieceAsciis } from "../../models/enums/PieceAsciis.enum";
 import { EPlayer } from "../../models/enums/Player.enum";
 import { IPiece } from "../../models/Piece";
 import { getColByPosition, getRowByPosition } from "../getRowAndCallPosition";
@@ -35,25 +36,25 @@ export default function canEnpassant(
 
   if (rowDiff === 1 && colDiff === 1) {
     if (pieces[end].ascii === null) {
-      if (pieces[start + 1].ascii !== "P" || passant !== start + 1) {
+      if (pieces[start + 1].ascii !== EPieceAsciis.blackPawn || passant !== start + 1) {
         return false;
       }
     }
   } else if (rowDiff === 1 && colDiff === -1) {
     if (pieces[end].ascii === null) {
-      if (pieces[start - 1].ascii !== "P" || passant !== start - 1) {
+      if (pieces[start - 1].ascii !== EPieceAsciis.blackPawn || passant !== start - 1) {
         return false;
       }
     }
   } else if (rowDiff === -1 && colDiff === 1) {
     if (pieces[end].ascii === null) {
-      if (pieces[start + 1].ascii !== "p" || passant !== start + 1) {
+      if (pieces[start + 1].ascii !== EPieceAsciis.whitePawn || passant !== start + 1) {
         return false;
       }
     }
   } else if (rowDiff === -1 && colDiff === -1) {
     if (pieces[end].ascii === null) {
-      if (pieces[start - 1].ascii !== "p" || passant !== start - 1) {
+      if (pieces[start - 1].ascii !== EPieceAsciis.whitePawn || passant !== start - 1) {
         return false;
       }
     }

@@ -7,6 +7,7 @@ import checkmate from "./checkmate";
 import highlightMate from "../UI/highlightMate";
 import makeMove from "./makeMove";
 import stalemate from "./stalemate";
+import { EPieceAsciis } from "../../models/enums/PieceAsciis.enum";
 
 export default function getMoveConditions(
   player: string,
@@ -27,7 +28,7 @@ export default function getMoveConditions(
     collection.push(<Collected value={pieces[end]} />);
   }
 
-  if (pieces[start].ascii === (player === EPlayer.white ? "p" : "P")) {
+  if (pieces[start].ascii === (player === EPlayer.white ? EPieceAsciis.whitePawn : EPieceAsciis.blackPawn)) {
     if (end - start === (player === EPlayer.white ? -9 : 7)) {
       if (start - 1 === passantPos) {
         collection.push(<Collected value={pieces[start - 1]} />);
@@ -45,11 +46,11 @@ export default function getMoveConditions(
 
   const passantTrue =
     player === EPlayer.white
-      ? pieces[end].ascii === "p" &&
+      ? pieces[end].ascii === EPieceAsciis.whitePawn &&
         start >= 48 &&
         start <= 55 &&
         end - start === -16
-      : pieces[end].ascii === "P" &&
+      : pieces[end].ascii === EPieceAsciis.blackPawn &&
         start >= 8 &&
         start <= 15 &&
         end - start === 16;

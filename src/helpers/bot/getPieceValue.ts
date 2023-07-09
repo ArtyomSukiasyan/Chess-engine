@@ -22,17 +22,17 @@ export default function getPieceValue(piece: IPiece, position: number) {
   let y = position % 8;
 
   switch (piece.ascii.toLowerCase()) {
-    case "p":
+    case EPieceAsciis.whitePawn:
       pieceValue =
         100 +
-        10 * (piece.ascii === "p" ? pawnEvalWhite[y][x] : pawnEvalBlack[y][x]);
+        10 * (piece.ascii === EPieceAsciis.whitePawn ? pawnEvalWhite[y][x] : pawnEvalBlack[y][x]);
       break;
     case EPieceAsciis.whiteRook:
       pieceValue =
         525 +
         10 * (piece.ascii === EPieceAsciis.whiteRook ? rookEvalWhite[y][x] : rookEvalBlack[y][x]);
       break;
-    case "n":
+    case EPieceAsciis.whiteKnight:
       pieceValue = 350 + 10 * knightEval[y][x];
       break;
     case "b":

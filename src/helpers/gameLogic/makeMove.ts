@@ -27,7 +27,7 @@ export default function makeMove(
   }
 
   const passant = !passant_pos ? statePassantPos : passant_pos;
-  if (pieces[start].ascii?.toLowerCase() === "p") {
+  if (pieces[start].ascii?.toLowerCase() === EPieceAsciis.whitePawn) {
     if (end - start === -7 || end - start === 9) {
       if (start + 1 === passant) {
         pieces[start + 1] = new FillerPiece(null);
@@ -42,11 +42,11 @@ export default function makeMove(
   pieces[start] = new FillerPiece(null);
   pieces[start].highlight = true;
 
-  if (pieces[end].ascii === "p" && end >= 0 && end <= 7) {
+  if (pieces[end].ascii === EPieceAsciis.whitePawn && end >= 0 && end <= 7) {
     pieces[end] = new Queen(EPlayer.white);
     pieces[end].highlight = true;
   }
-  if (pieces[end].ascii === "P" && end >= 56 && end <= 63) {
+  if (pieces[end].ascii === EPieceAsciis.blackPawn && end >= 56 && end <= 63) {
     pieces[end] = new Queen(EPlayer.black);
     pieces[end].highlight = true;
   }

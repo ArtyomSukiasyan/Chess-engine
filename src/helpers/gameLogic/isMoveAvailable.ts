@@ -69,9 +69,9 @@ export default function isMoveAvailable(
   checkSquares[end] = checkSquares[start];
   checkSquares[start] = new FillerPiece(null);
 
-  if (checkSquares[end].ascii === "p" && end >= 0 && end <= 7) {
+  if (checkSquares[end].ascii === EPieceAsciis.whitePawn && end >= 0 && end <= 7) {
     checkSquares[end] = new Queen(EPlayer.white);
-  } else if (checkSquares[end].ascii === "P" && end >= 56 && end <= 63) {
+  } else if (checkSquares[end].ascii === EPieceAsciis.blackPawn && end >= 56 && end <= 63) {
     checkSquares[end] = new Queen(EPlayer.black);
   }
   if (

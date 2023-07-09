@@ -1,4 +1,5 @@
 import { ICastlingConditions } from "../../models/CastlingConditions";
+import { EPieceAsciis } from "../../models/enums/PieceAsciis.enum";
 import { IPiece } from "../../models/Piece";
 import makeMove from "../gameLogic/makeMove";
 import minimax from "./minimax";
@@ -40,7 +41,7 @@ export default function findBestMove(
 
     let passantPos = -1;
 
-    const isBlackPawn = testSquares[start].ascii === "P";
+    const isBlackPawn = testSquares[start].ascii === EPieceAsciis.blackPawn;
     const isBlackCanEnpassant = start >= 8 && start <= 15 && end - start === 16;
 
     if (isBlackPawn && isBlackCanEnpassant) {
