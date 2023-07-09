@@ -18,7 +18,7 @@ export default function findBestMove(
   let randStart = 100;
   let randEnd = 100;
   let bestValue = -9999;
-  let newRepetition;
+  let newRepetition: number;
 
   for (let i = 0; i < moves.length; i += 2) {
     let start = moves[i];
@@ -30,37 +30,40 @@ export default function findBestMove(
 
     if (isMore2Repetition && isSameStart && isSameEnd) {
       newRepetition = 0;
-    } else {
-      const testSquares = pieces.slice();
 
-      const testSquares_2 = makeMove(testSquares, start, end, statePassantPos);
+      break;
+    }
 
-      let passantPos = -1;
+    const testSquares = pieces.slice();
 
-      const isBlackPawn = testSquares[start].ascii === "P";
+    const testSquares_2 = makeMove(testSquares, start, end, statePassantPos);
 
-      if (isBlackPawn && start >= 8 && start <= 15 && end - start === 16) {
-        passantPos = end;
-      }
+    let passantPos = -1;
 
-      const boardEval = minimax(
-        depth - 1,
-        false,
-        -1000,
-        1000,
-        testSquares_2,
-        starts,
-        ends,
-        statePassantPos,
-        castlingConditions,
-        passantPos
-      );
+    const isBlackPawn = testSquares[start].ascii === "P";
+    const isBlackCanEnpassant = start >= 8 && start <= 15 && end - start === 16;
 
-      if (boardEval >= bestValue) {
-        bestValue = boardEval;
-        randStart = start;
-        randEnd = end;
-      }
+    if (isBlackPawn && isBlackCanEnpassant) {
+      passantPos = end;
+    }
+
+    const boardEval = minimax(
+      depth - 1,
+      false,
+      -1000,
+      1000,
+      testSquares_2,
+      starts,
+      ends,
+      statePassantPos,
+      castlingConditions,
+      passantPos
+    );
+
+    if (boardEval >= bestValue) {
+      bestValue = boardEval;
+      randStart = start;
+      randEnd = end;
     }
   }
 

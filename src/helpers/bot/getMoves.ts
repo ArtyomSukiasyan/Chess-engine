@@ -9,6 +9,40 @@ export default function getMoves(
   passantPos: number,
   castlingConditions: ICastlingConditions
 ) {
+  const { starts, ends } = getStartsAndEnds();
+
+  const moves = [];
+
+  for (let i = 0; i < 64; i++) {
+    const start = starts[i];
+
+    const isValidPiece = pieces[start].ascii !== null;
+    const isBlackPiece = isValidPiece && pieces[start].player === EPlayer.black;
+
+    if (isBlackPiece) {
+      for (let j = 0; j < 64; j++) {
+        const end = ends[j];
+        
+        const isAvailableMove = isMoveAvailable(
+          start,
+          end,
+          pieces,
+          passantPos,
+          castlingConditions
+        );
+
+        if (isAvailableMove) {
+          moves.push(start);
+          moves.push(end);
+        }
+      }
+    }
+  }
+
+  return { moves, starts, ends };
+}
+
+function getStartsAndEnds() {
   let starts = [];
   let ends = [];
 
@@ -20,23 +54,5 @@ export default function getMoves(
   starts = shuffle(starts);
   ends = shuffle(ends);
 
-  let moves = [];
-  for (let i = 0; i < 64; i++) {
-    let start = starts[i];
-    let isBlackPiece =
-      pieces[start].ascii !== null && pieces[start].player === EPlayer.black;
-    if (isBlackPiece) {
-      for (let j = 0; j < 64; j++) {
-        let end = ends[j];
-        if (
-          isMoveAvailable(start, end, pieces, passantPos, castlingConditions)
-        ) {
-          moves.push(start);
-          moves.push(end);
-        }
-      }
-    }
-  }
-
-  return { moves, starts, ends };
+  return { starts, ends };
 }

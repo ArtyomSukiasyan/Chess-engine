@@ -25,39 +25,53 @@ export default function minimax(
   let bestValue = isBlackPlayer ? -9999 : 9999;
 
   for (let i = 0; i < 64; i++) {
-    let start = starts[i];
-    let isPlayerPiece =
-      copySquares[start].ascii !== null &&
-      copySquares[start].player === (isBlackPlayer ? EPlayer.black : EPlayer.white);
+    const start = starts[i];
+
+    const isValidPiece = copySquares[start].ascii !== null;
+    const currentPlayer = isBlackPlayer ? EPlayer.black : EPlayer.white;
+    const isSamePlayer = copySquares[start].player === currentPlayer;
+
+    const isPlayerPiece = isValidPiece && isSamePlayer;
 
     if (isPlayerPiece) {
       for (let j = 0; j < 64; j++) {
-        let end = ends[j];
-        if (
-          isMoveAvailable(
-            start,
-            end,
-            copySquares,
-            statePassantPos,
-            castlingConditions,
-            passantPos
-          )
-        ) {
+        const end = ends[j];
+        const isAvailableMove = isMoveAvailable(
+          start,
+          end,
+          copySquares,
+          statePassantPos,
+          castlingConditions,
+          passantPos
+        );
+
+        if (isAvailableMove) {
           const testSquares = pieces.slice();
-          const testSquares_2 = makeMove(
+          const testSquares2 = makeMove(
             testSquares,
             start,
             end,
             statePassantPos,
             passantPos
           );
+
           let passant = -1;
-          if (
-            testSquares[end].ascii === (isBlackPlayer ? "P" : "p") &&
-            start >= (isBlackPlayer ? 8 : 48) &&
-            start <= (isBlackPlayer ? 15 : 55) &&
-            end - start === (isBlackPlayer ? 16 : -16)
-          ) {
+
+          const playerASCII = isBlackPlayer ? "P" : "p";
+          const isSamePlayer = testSquares[end].ascii === playerASCII;
+
+          const pawnJumpValue = isBlackPlayer ? 16 : -16;
+          const pawnMovesCount = end - start;
+          const isOpponentPawnHasJumped = pawnMovesCount === pawnJumpValue;
+
+          const isPawnValidStart = start >= (isBlackPlayer ? 8 : 48);
+          const isPawnValidEnd = start <= (isBlackPlayer ? 15 : 55);
+          const isValidPawnPosition = isPawnValidStart && isPawnValidEnd;
+
+          const isBlackCanEnpassant =
+            isValidPawnPosition && isOpponentPawnHasJumped;
+
+          if (isSamePlayer && isBlackCanEnpassant) {
             passant = end;
           }
 
@@ -66,17 +80,19 @@ export default function minimax(
             !isBlackPlayer,
             alpha,
             beta,
-            testSquares_2,
+            testSquares2,
             starts,
             ends,
             statePassantPos,
             castlingConditions,
             passant
           );
+
           if (isBlackPlayer) {
             if (value > bestValue) {
               bestValue = value;
             }
+
             alpha = Math.max(alpha, bestValue);
 
             if (bestValue >= beta) {
