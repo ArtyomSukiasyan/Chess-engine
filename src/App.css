@@ -55,6 +55,7 @@ html {
   display: inline-block;
   outline: none !important;
   width: 45%;
+  min-height: 100px;
   background-color: #deeaee;
   padding: 0 15px 5px;
   border-top-right-radius: 0px;
