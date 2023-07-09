@@ -1,4 +1,5 @@
 import { ReactElement } from "react";
+import { EPieceAsciis } from "../models/enums/PieceAsciis.enum";
 import { EPlayer } from "../models/enums/Player.enum";
 
 export default class Queen {
@@ -17,7 +18,7 @@ export default class Queen {
         {player === EPlayer.white ? String.fromCharCode(9813) : String.fromCharCode(9819)}
       </span>
     );
-    this.ascii = player === EPlayer.white ? "q" : "Q";
+    this.ascii = player === EPlayer.white ? EPieceAsciis.whiteQueen : EPieceAsciis.blackQueen;
   }
 
   canMove(start: number, end: number) {

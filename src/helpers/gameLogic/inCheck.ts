@@ -1,4 +1,5 @@
 import { ICastlingConditions } from "../../models/CastlingConditions";
+import { EPieceAsciis } from "../../models/enums/PieceAsciis.enum";
 import { EPlayer } from "../../models/enums/Player.enum";
 import { IPiece } from "../../models/Piece";
 import isInvalidMove from "./isInvalidMove";
@@ -9,7 +10,7 @@ export default function inCheck(
   statePassantPos: number,
   castlingConditions: ICastlingConditions
 ) {
-  const king = player === EPlayer.white ? "k" : "K";
+  const king = player === EPlayer.white ? EPieceAsciis.whiteKing : EPieceAsciis.blackKing;
   let positionOfKing = -1;
 
   for (let i = 0; i < 64; i++) {

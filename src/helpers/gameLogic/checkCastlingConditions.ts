@@ -1,4 +1,5 @@
 import { ICastlingConditions } from "../../models/CastlingConditions";
+import { EPieceAsciis } from "../../models/enums/PieceAsciis.enum";
 import { EPlayer } from "../../models/enums/Player.enum";
 import { IPiece } from "../../models/Piece";
 
@@ -8,7 +9,7 @@ export default function checkCastlingConditions(
   castlingConditions: ICastlingConditions,
   start: number
 ) {
-  if (pieces[start]?.ascii === (player === EPlayer.white ? "k" : "K")) {
+  if (pieces[start]?.ascii === (player === EPlayer.white ? EPieceAsciis.whiteKing : EPieceAsciis.blackKing)) {
     if (player === EPlayer.white) {
       castlingConditions = {
         ...castlingConditions,
@@ -22,7 +23,7 @@ export default function checkCastlingConditions(
     }
   }
 
-  if (pieces[start].ascii === (player === EPlayer.white ? "r" : "R")) {
+  if (pieces[start].ascii === (player === EPlayer.white ? EPieceAsciis.whiteRook : EPieceAsciis.blackRook)) {
     if (start === (player === EPlayer.white ? 56 : 0)) {
       if (player === EPlayer.white) {
         castlingConditions = {

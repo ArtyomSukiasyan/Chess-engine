@@ -1,3 +1,4 @@
+import { EPieceAsciis } from "../../models/enums/PieceAsciis.enum";
 import { EPlayer } from "../../models/enums/Player.enum";
 import { IPiece } from "../../models/Piece";
 import clearHighlight from "./clearHighlight";
@@ -10,7 +11,7 @@ export default function clearPiecesHighLight(pieces: IPiece[], player: string) {
     pieces = clearPossibleHighlight(pieces);
 
     for (let j = 0; j < 64; j++) {
-      if (pieces[j].ascii === "k") {
+      if (pieces[j].ascii === EPieceAsciis.whiteKing) {
         pieces[j].inCheck = false;
 
         break;

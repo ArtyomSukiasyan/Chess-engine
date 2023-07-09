@@ -1,3 +1,4 @@
+import { EPieceAsciis } from "../../models/enums/PieceAsciis.enum";
 import { EPlayer } from "../../models/enums/Player.enum";
 import { IPiece } from "../../models/Piece";
 import FillerPiece from "../../pieces/FillerPiece";
@@ -10,14 +11,14 @@ export default function makeMove(
   statePassantPos: number,
   passant_pos?: number
 ) {
-  const isKing = pieces[start].ascii === "k" || pieces[start].ascii === "K";
+  const isKing = pieces[start].ascii === EPieceAsciis.whiteKing || pieces[start].ascii === EPieceAsciis.blackKing;
   if (isKing && Math.abs(end - start) === 2) {
-    if (end === (pieces[start].ascii === "k" ? 62 : 6)) {
+    if (end === (pieces[start].ascii === EPieceAsciis.whiteKing ? 62 : 6)) {
       pieces[end - 1] = pieces[end + 1];
       pieces[end - 1].highlight = true;
       pieces[end + 1] = new FillerPiece(null);
       pieces[end + 1].highlight = true;
-    } else if (end === (pieces[start].ascii === "k" ? 58 : 2)) {
+    } else if (end === (pieces[start].ascii === EPieceAsciis.whiteKing ? 58 : 2)) {
       pieces[end + 1] = pieces[end - 2];
       pieces[end + 1].highlight = true;
       pieces[end - 2] = new FillerPiece(null);

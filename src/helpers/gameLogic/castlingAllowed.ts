@@ -1,4 +1,5 @@
 import { ICastlingConditions } from "../../models/CastlingConditions";
+import { EPieceAsciis } from "../../models/enums/PieceAsciis.enum";
 import { EPlayer } from "../../models/enums/Player.enum";
 import { IPiece } from "../../models/Piece";
 
@@ -16,7 +17,7 @@ export default function castlingAllowed(
   }
 
   const deltaPos = endPosition - startPosition;
-  const rookASCII = player === EPlayer.white ? "r" : "R";
+  const rookASCII = player === EPlayer.white ? EPieceAsciis.whiteRook : EPieceAsciis.blackRook;
 
   const kingASCII =
     deltaPos === 2

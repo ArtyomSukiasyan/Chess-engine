@@ -3,6 +3,7 @@ import { EPlayer } from "../../models/enums/Player.enum";
 import { IPiece } from "../../models/Piece";
 import clearPossibleHighlight from "./clearPossibleHighlight";
 import inCheck from "../gameLogic/inCheck";
+import { EPieceAsciis } from "../../models/enums/PieceAsciis.enum";
 
 export default function paintCheck(
   pieces: IPiece[],
@@ -18,7 +19,7 @@ export default function paintCheck(
 
   if (idx !== source && isWhiteInCheck) {
     for (let j = 0; j < 64; j++) {
-      if (pieces[j].ascii === "k") {
+      if (pieces[j].ascii === EPieceAsciis.whiteKing) {
         pieces[j].inCheck = true;
 
         break;

@@ -1,3 +1,4 @@
+import { EPieceAsciis } from "../../models/enums/PieceAsciis.enum";
 import { IPiece } from "../../models/Piece";
 
 export default function calcSquareColor(
@@ -26,7 +27,7 @@ export default function calcSquareColor(
         : "highlighted_black_square";
   }
 
-  if (checkedPiece.ascii !== null && checkedPiece.ascii.toLowerCase() === "k") {
+  if (checkedPiece.ascii !== null && checkedPiece.ascii.toLowerCase() === EPieceAsciis.whiteKing) {
     if (checkedPiece.inCheck) {
       squareColor =
         isEvenValues || isNotEvenValues

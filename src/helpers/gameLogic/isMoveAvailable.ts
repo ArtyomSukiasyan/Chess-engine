@@ -1,4 +1,5 @@
 import { ICastlingConditions } from "../../models/CastlingConditions";
+import { EPieceAsciis } from "../../models/enums/PieceAsciis.enum";
 import { EPlayer } from "../../models/enums/Player.enum";
 import { IPiece } from "../../models/Piece";
 import FillerPiece from "../../pieces/FillerPiece";
@@ -37,7 +38,7 @@ export default function isMoveAvailable(
   }
 
   const cantCastle =
-    pieces[start].ascii === (player === EPlayer.white ? "k" : "K") &&
+    pieces[start].ascii === (player === EPlayer.white ? EPieceAsciis.whiteKing : EPieceAsciis.blackKing) &&
     Math.abs(end - start) === 2 &&
     inCheck(player as string, pieces, statePassantPos, castlingConditions);
 
@@ -46,7 +47,7 @@ export default function isMoveAvailable(
   }
 
   if (
-    pieces[start].ascii === (player === EPlayer.white ? "k" : "K") &&
+    pieces[start].ascii === (player === EPlayer.white ? EPieceAsciis.whiteKing : EPieceAsciis.blackKing) &&
     Math.abs(end - start) === 2
   ) {
     const deltaPos = end - start;

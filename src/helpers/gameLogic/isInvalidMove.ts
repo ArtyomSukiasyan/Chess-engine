@@ -1,4 +1,5 @@
 import { ICastlingConditions } from "../../models/CastlingConditions";
+import { EPieceAsciis } from "../../models/enums/PieceAsciis.enum";
 import { IPiece } from "../../models/Piece";
 import blockersExist from "../board/blockersExist";
 import canEnpassant from "./canEnpassant";
@@ -13,11 +14,11 @@ export default function isInvalidMove(
   passant_pos?: number
 ) {
   const isValidPieces =
-    pieces[start].ascii?.toLowerCase() === "r" ||
-    pieces[start].ascii?.toLowerCase() === "q" ||
+    pieces[start].ascii?.toLowerCase() === EPieceAsciis.whiteRook ||
+    pieces[start].ascii?.toLowerCase() === EPieceAsciis.whiteQueen ||
     pieces[start].ascii?.toLowerCase() === "b" ||
     pieces[start].ascii?.toLowerCase() === "p" ||
-    pieces[start].ascii?.toLowerCase() === "k";
+    pieces[start].ascii?.toLowerCase() === EPieceAsciis.whiteKing;
 
   let invalid = isValidPieces && blockersExist(start, end, pieces);
 
@@ -34,7 +35,7 @@ export default function isInvalidMove(
     return invalid;
   }
 
-  const king = pieces[start].ascii?.toLowerCase() === "k";
+  const king = pieces[start].ascii?.toLowerCase() === EPieceAsciis.whiteKing;
 
   if (king && Math.abs(end - start) === 2) {
     invalid = !castlingAllowed(start, end, pieces, castlingConditions);
