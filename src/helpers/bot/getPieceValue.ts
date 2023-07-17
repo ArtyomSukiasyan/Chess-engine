@@ -25,21 +25,29 @@ export default function getPieceValue(piece: IPiece, position: number) {
     case EPieceAsciis.whitePawn:
       pieceValue =
         100 +
-        10 * (piece.ascii === EPieceAsciis.whitePawn ? pawnEvalWhite[y][x] : pawnEvalBlack[y][x]);
+        10 *
+          (piece.ascii === EPieceAsciis.whitePawn
+            ? pawnEvalWhite[y][x]
+            : pawnEvalBlack[y][x]);
       break;
     case EPieceAsciis.whiteRook:
       pieceValue =
         525 +
-        10 * (piece.ascii === EPieceAsciis.whiteRook ? rookEvalWhite[y][x] : rookEvalBlack[y][x]);
+        10 *
+          (piece.ascii === EPieceAsciis.whiteRook
+            ? rookEvalWhite[y][x]
+            : rookEvalBlack[y][x]);
       break;
     case EPieceAsciis.whiteKnight:
       pieceValue = 350 + 10 * knightEval[y][x];
       break;
-    case "b":
+    case EPieceAsciis.whiteBishop:
       pieceValue =
         350 +
         10 *
-          (piece.ascii === "b" ? bishopEvalWhite[y][x] : bishopEvalBlack[y][x]);
+          (piece.ascii === EPieceAsciis.whiteBishop
+            ? bishopEvalWhite[y][x]
+            : bishopEvalBlack[y][x]);
       break;
     case EPieceAsciis.whiteQueen:
       pieceValue = 1000 + 10 * evalQueen[y][x];
@@ -47,7 +55,10 @@ export default function getPieceValue(piece: IPiece, position: number) {
     case EPieceAsciis.whiteKing:
       pieceValue =
         10000 +
-        10 * (piece.ascii === EPieceAsciis.whiteKing ? kingEvalWhite[y][x] : kingEvalBlack[y][x]);
+        10 *
+          (piece.ascii === EPieceAsciis.whiteKing
+            ? kingEvalWhite[y][x]
+            : kingEvalBlack[y][x]);
       break;
     default:
       pieceValue = 0;
