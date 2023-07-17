@@ -9,7 +9,10 @@ export default function checkCastlingConditions(
   castlingConditions: ICastlingConditions,
   start: number
 ) {
-  if (pieces[start]?.ascii === (player === EPlayer.white ? EPieceAsciis.whiteKing : EPieceAsciis.blackKing)) {
+  const kingASCII =
+    player === EPlayer.white ? EPieceAsciis.whiteKing : EPieceAsciis.blackKing;
+
+  if (pieces[start]?.ascii === kingASCII) {
     if (player === EPlayer.white) {
       castlingConditions = {
         ...castlingConditions,
@@ -18,12 +21,15 @@ export default function checkCastlingConditions(
     } else {
       castlingConditions = {
         ...castlingConditions,
-        whiteKingHasMoved: true,
+        blackKingHasMoved: true,
       };
     }
   }
 
-  if (pieces[start].ascii === (player === EPlayer.white ? EPieceAsciis.whiteRook : EPieceAsciis.blackRook)) {
+  const rookASCII =
+    player === EPlayer.white ? EPieceAsciis.whiteRook : EPieceAsciis.blackRook;
+    
+  if (pieces[start].ascii === rookASCII) {
     if (start === (player === EPlayer.white ? 56 : 0)) {
       if (player === EPlayer.white) {
         castlingConditions = {

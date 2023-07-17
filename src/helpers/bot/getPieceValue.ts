@@ -14,7 +14,7 @@ import { IPiece } from "../../models/Piece";
 export default function getPieceValue(piece: IPiece, position: number) {
   let pieceValue = 0;
 
-  if (piece.ascii == null) {
+  if (piece.ascii === null) {
     return 0;
   }
 
