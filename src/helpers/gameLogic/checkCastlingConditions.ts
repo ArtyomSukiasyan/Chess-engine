@@ -28,7 +28,7 @@ export default function checkCastlingConditions(
 
   const rookASCII =
     player === EPlayer.white ? EPieceAsciis.whiteRook : EPieceAsciis.blackRook;
-    
+
   if (pieces[start].ascii === rookASCII) {
     if (start === (player === EPlayer.white ? 56 : 0)) {
       if (player === EPlayer.white) {

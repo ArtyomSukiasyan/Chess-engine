@@ -15,6 +15,7 @@ import Board from "./components/Board";
 import { defaultCastlingConditions } from "./constants/castlingConditions";
 import LeftScreen from "./components/LeftScreen";
 import { EPlayer } from "./models/enums/Player.enum";
+import { EPieceAsciis } from "./models/enums/PieceAsciis.enum";
 
 const Game: React.FC = () => {
   const [pieces, setPieces] = useState<IPiece[]>(initializeBoard());
@@ -59,14 +60,29 @@ const Game: React.FC = () => {
   ) => {
     let updatedSquares = clearPiecesHighlight(squares, player);
 
-    const newCastlingConditions = checkCastlingConditions(
-      updatedSquares,
-      player,
-      castlingConditions,
-      start
-    );
+    const kingASCII =
+      player === EPlayer.white
+        ? EPieceAsciis.whiteKing
+        : EPieceAsciis.blackKing;
 
-    setCastlingConditions(newCastlingConditions);
+    const rookASCII =
+      player === EPlayer.white
+        ? EPieceAsciis.whiteRook
+        : EPieceAsciis.blackRook;
+
+    const isKing = pieces[start].ascii === rookASCII;
+    const isRook = pieces[start].ascii === kingASCII;
+
+    if (isKing || isRook) {
+      const newCastlingConditions = checkCastlingConditions(
+        updatedSquares,
+        player,
+        castlingConditions,
+        start
+      );
+
+      setCastlingConditions(newCastlingConditions);
+    }
 
     const { checkMated, passant, staleMated, collection } = getMoveConditions(
       player,
