@@ -18,8 +18,8 @@ export default function getPieceValue(piece: IPiece, position: number) {
     return 0;
   }
 
-  let x = Math.floor(position / 8);
-  let y = position % 8;
+  const x = Math.floor(position / 8);
+  const y = position % 8;
 
   switch (piece.ascii.toLowerCase()) {
     case EPieceAsciis.whitePawn:
