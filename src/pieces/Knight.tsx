@@ -2,6 +2,9 @@ import { ReactElement } from "react";
 import { EPieceAsciis } from "../models/enums/PieceAsciis.enum";
 import { EPlayer } from "../models/enums/Player.enum";
 
+import { Pieces } from '../constants/pieces';
+import { PieceIcon } from '../components/PieceIcon';
+
 export default class Knight {
   player: string;
   highlight: boolean;
@@ -13,11 +16,7 @@ export default class Knight {
     this.player = player;
     this.highlight = false;
     this.possible = false;
-    this.icon = (
-      <span className="piece">
-        {player === EPlayer.white ? String.fromCharCode(9816) : String.fromCharCode(9822)}
-      </span>
-    );
+    this.icon = <PieceIcon piece={Pieces.Knight} isWhite={player === EPlayer.white} />;
     this.ascii = player === EPlayer.white ? EPieceAsciis.whiteKnight : EPieceAsciis.blackKnight;
   }
 

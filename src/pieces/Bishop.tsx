@@ -1,6 +1,9 @@
 import { ReactElement } from "react";
 import { EPlayer } from "../models/enums/Player.enum";
 
+import { PieceIcon } from '../components/PieceIcon';
+import { Pieces } from '../constants/pieces';
+
 export default class Bishop {
   player: string;
   highlight: boolean;
@@ -12,11 +15,7 @@ export default class Bishop {
     this.player = player;
     this.highlight = false;
     this.possible = false;
-    this.icon = (
-      <span className="piece">
-        {player === EPlayer.white ? String.fromCharCode(9815) : String.fromCharCode(9821)}
-      </span>
-    );
+    this.icon = <PieceIcon piece={Pieces.Bishop} isWhite={player === EPlayer.white} />;
     this.ascii = player === EPlayer.white ? EPlayer.black : EPlayer.black;
   }
 

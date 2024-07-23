@@ -354,7 +354,6 @@ html {
 }
 
 .piece {
-  height: 60%;
   display: flex;
   flex: 1 1 auto;
   flex-flow: column nowrap;
@@ -362,4 +361,9 @@ html {
   justify-content: center;
   font-size: 2.5em;
   cursor: pointer;
+  padding: 4px;
+}
+
+.piece img {
+  max-width: 100%;
 }
