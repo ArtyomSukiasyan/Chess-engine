@@ -1,3 +1,4 @@
+import { JSX } from "react";
 import Collected from "../../components/Collection";
 import { ICastlingConditions } from "../../models/CastlingConditions";
 import { EPlayer } from "../../models/enums/Player.enum";

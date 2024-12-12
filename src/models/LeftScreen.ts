@@ -1,4 +1,4 @@
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, JSX } from "react";
 import { ICastlingConditions } from "./CastlingConditions";
 import { IPiece } from "./Piece";
 

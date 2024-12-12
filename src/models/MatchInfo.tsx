@@ -1,3 +1,4 @@
+import { JSX } from "react";
 import { IMateWrapper } from "./MateWrapper";
 
 export interface IMatchInfo extends IMateWrapper {

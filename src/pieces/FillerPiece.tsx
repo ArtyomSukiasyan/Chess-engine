@@ -1,3 +1,5 @@
+import { JSX } from "react";
+
 export default class FillerPiece {
   player: string | null;
   highlight: boolean;

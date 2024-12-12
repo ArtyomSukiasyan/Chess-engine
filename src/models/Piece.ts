@@ -1,3 +1,5 @@
+
+import { JSX } from "react";
 export interface IPiece {
   ascii: string | null;
   highlight: boolean;

@@ -1,3 +1,4 @@
+import { JSX } from "react";
 import Label from "../components/Label";
 
 export const rowNumbers: JSX.Element[] = [];

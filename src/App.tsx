@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import { useState, JSX } from "react";
 import "./App.css";
 import clearPiecesHighlight from "./helpers/UI/clearPiecesHighlight";
 import getMoveConditions from "./helpers/gameLogic/getMoveConditions";
