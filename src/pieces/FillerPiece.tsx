@@ -15,7 +15,7 @@ export default class FillerPiece {
     this.ascii = null;
   }
 
-  canMove(start: number, end: number) {
+  canMove() {
     return false;
   }
 }
