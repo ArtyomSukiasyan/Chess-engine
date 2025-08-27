@@ -7,6 +7,6 @@ Based on [React-ts-chess](https://github.com/ArtyomSukiasyan/react-ts-chess) and
 - git clone https://github.com/ArtyomSukiasyan/Chess-engine.git
 - cd Chess-engine
 - npm i
-- npm start
+- npm run dev
 
 Application uses PORT 5173
