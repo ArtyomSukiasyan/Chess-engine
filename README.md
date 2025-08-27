@@ -9,4 +9,4 @@ Based on [React-ts-chess](https://github.com/ArtyomSukiasyan/react-ts-chess) and
 - npm i
 - npm start
 
-Application uses PORT 3000
+Application uses PORT 5173
