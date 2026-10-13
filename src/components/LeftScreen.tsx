@@ -1,6 +1,8 @@
 import { ILeftScreen } from "../models/LeftScreen";
 import MatchInfo from "./MatchInfo";
+import FlipButton from "./FlipButton";
 import ResetButton from "./ResetButton";
+import SwitchColorButton from "./SwitchColorButton";
 
 export default function LeftScreen({
   pieces,
@@ -10,6 +12,9 @@ export default function LeftScreen({
   piecesCollectedByWhite,
   piecesCollectedByBlack,
   reset,
+  flip,
+  switchColor,
+  humanColor,
 }: ILeftScreen) {
   return (
     <div className="left_screen ">
@@ -21,9 +26,14 @@ export default function LeftScreen({
           turn={turn}
           piecesCollectedByWhite={piecesCollectedByWhite}
           piecesCollectedByBlack={piecesCollectedByBlack}
+          humanColor={humanColor}
         />
 
-        <ResetButton onClick={reset} />
+        <div className="button_wrapper">
+          <ResetButton onClick={reset} />
+          <FlipButton onClick={flip} />
+          <SwitchColorButton onClick={switchColor} humanColor={humanColor} />
+        </div>
       </div>
     </div>
   );

@@ -6,8 +6,15 @@ export default function MateWrapper({
   passantPos,
   castlingConditions,
   turn,
+  humanColor,
 }: IMateWrapper) {
-  const mateInfo = getMateInfo(pieces, passantPos, castlingConditions, turn);
+  const mateInfo = getMateInfo(
+    pieces,
+    passantPos,
+    castlingConditions,
+    turn,
+    humanColor
+  );
 
   return (
     <div className="mate_wrapper">

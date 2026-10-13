@@ -1,5 +1,4 @@
 import { ICastlingConditions } from "../../models/CastlingConditions";
-import { EPlayer } from "../../models/enums/Player.enum";
 import { IPiece } from "../../models/Piece";
 import isMoveAvailable from "../gameLogic/isMoveAvailable";
 import shuffle from "./shuffle";
@@ -7,7 +6,8 @@ import shuffle from "./shuffle";
 export default function getMoves(
   pieces: IPiece[],
   passantPos: number,
-  castlingConditions: ICastlingConditions
+  castlingConditions: ICastlingConditions,
+  botColor: string
 ) {
   const { starts, ends } = getStartsAndEnds();
 
@@ -17,9 +17,9 @@ export default function getMoves(
     const start = starts[i];
 
     const isValidPiece = pieces[start].ascii !== null;
-    const isBlackPiece = isValidPiece && pieces[start].player === EPlayer.black;
+    const isBotPiece = isValidPiece && pieces[start].player === botColor;
 
-    if (isBlackPiece) {
+    if (isBotPiece) {
       for (let j = 0; j < 64; j++) {
         const end = ends[j];
         

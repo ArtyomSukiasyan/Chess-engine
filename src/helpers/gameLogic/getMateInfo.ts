@@ -1,7 +1,7 @@
 import {
-  blackIsInCheck,
-  blackIsMated,
-  blackIsStaled,
+  botIsInCheck,
+  botIsMated,
+  botIsStaled,
   youAreInCheck,
   youAreMated,
   youAreStaled,
@@ -17,9 +17,11 @@ export default function getMateInfo(
   pieces: IPiece[],
   passantPos: number,
   castlingConditions: ICastlingConditions,
-  turn: string
+  turn: string,
+  humanColor: string
 ) {
   const isWhiteTurn = turn === EPlayer.white;
+  const isHumanWhite = humanColor === EPlayer.white;
 
   const {
     isBlackChecked,
@@ -32,34 +34,34 @@ export default function getMateInfo(
 
   return [
     {
-      condition: isWhiteChecked,
+      condition: isHumanWhite ? isWhiteChecked : isBlackChecked,
       text: youAreInCheck,
       additionalCondition: true,
     },
     {
-      condition: isBlackChecked,
-      text: blackIsInCheck,
+      condition: isHumanWhite ? isBlackChecked : isWhiteChecked,
+      text: botIsInCheck,
       additionalCondition: true,
     },
     {
-      condition: isWhiteMated,
+      condition: isHumanWhite ? isWhiteMated : isBlackMated,
       text: youAreMated,
       additionalCondition: true,
     },
     {
-      condition: isBlackMated,
-      text: blackIsMated,
+      condition: isHumanWhite ? isBlackMated : isWhiteMated,
+      text: botIsMated,
       additionalCondition: true,
     },
     {
-      condition: isWhiteStaled,
+      condition: isHumanWhite ? isWhiteStaled : isBlackStaled,
       text: youAreStaled,
-      additionalCondition: isWhiteTurn,
+      additionalCondition: isWhiteTurn === isHumanWhite,
     },
     {
-      condition: isBlackStaled,
-      text: blackIsStaled,
-      additionalCondition: !isWhiteTurn,
+      condition: isHumanWhite ? isBlackStaled : isWhiteStaled,
+      text: botIsStaled,
+      additionalCondition: isWhiteTurn !== isHumanWhite,
     },
   ];
 }

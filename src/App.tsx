@@ -1,4 +1,4 @@
-import { useState, JSX } from "react";
+import { useEffect, useState, JSX } from "react";
 import "./App.css";
 import clearPiecesHighlight from "./helpers/UI/clearPiecesHighlight";
 import getMoveConditions from "./helpers/gameLogic/getMoveConditions";
@@ -15,6 +15,9 @@ import { defaultCastlingConditions } from "./constants/castlingConditions";
 import LeftScreen from "./components/LeftScreen";
 import { EPlayer } from "./models/enums/Player.enum";
 import { EPieceAsciis } from "./models/enums/PieceAsciis.enum";
+import getOpponent from "./helpers/getOpponent";
+
+const searchDepth = 3;
 
 const Game: React.FC = () => {
   const [pieces, setPieces] = useState<IPiece[]>(initializeBoard());
@@ -27,7 +30,6 @@ const Game: React.FC = () => {
     defaultCastlingConditions
   );
   const [passantPos, setPassantPos] = useState<number>(-1);
-  const [isBotRunning, setIsBotRunning] = useState<boolean>(false);
   const [piecesCollectedByWhite, setPiecesCollectedByWhite] = useState<
     JSX.Element[]
   >([]);
@@ -35,6 +37,11 @@ const Game: React.FC = () => {
     JSX.Element[]
   >([]);
   const [mated, setMated] = useState<boolean>(false);
+  const [flipped, setFlipped] = useState<boolean>(false);
+  const [humanColor, setHumanColor] = useState<string>(EPlayer.white);
+
+  const botColor = getOpponent(humanColor);
+  const isBotRunning = turn === botColor && !mated;
 
   const reset = () => {
     setPieces(initializeBoard());
@@ -45,10 +52,17 @@ const Game: React.FC = () => {
     setRepetition(0);
     setCastlingConditions(defaultCastlingConditions);
     setPassantPos(-1);
-    setIsBotRunning(false);
     setPiecesCollectedByWhite([]);
     setPiecesCollectedByBlack([]);
     setMated(false);
+  };
+
+  const switchColor = () => {
+    const newColor = getOpponent(humanColor);
+
+    setHumanColor(newColor);
+    setFlipped(newColor === EPlayer.black);
+    reset();
   };
 
   const executeMove = (
@@ -57,7 +71,7 @@ const Game: React.FC = () => {
     start: number,
     end: number
   ) => {
-    let updatedSquares = clearPiecesHighlight(squares, player);
+    let updatedSquares = clearPiecesHighlight(squares, player, humanColor);
 
     const kingASCII =
       player === EPlayer.white
@@ -98,12 +112,14 @@ const Game: React.FC = () => {
     setPieces(updatedSquares);
     setSource(-1);
     setMated(checkMated || staleMated);
-    setTurn(player === EPlayer.black ? EPlayer.white : EPlayer.black);
-    setIsBotRunning(player !== EPlayer.black);
+    setTurn(getOpponent(player));
 
-    if (player === EPlayer.black) {
+    if (player === botColor) {
       setFirstPos(start);
       setSecondPos(end);
+    }
+
+    if (player === EPlayer.black) {
       setPiecesCollectedByBlack(collection);
     } else {
       setPiecesCollectedByWhite(collection);
@@ -118,7 +134,8 @@ const Game: React.FC = () => {
     const { moves, starts, ends } = getMoves(
       squares,
       passantPos,
-      castlingConditions
+      castlingConditions,
+      botColor
     );
 
     const { randStart, randEnd, newRepetition } = findBestMove(
@@ -131,21 +148,35 @@ const Game: React.FC = () => {
       depth,
       starts,
       ends,
-      castlingConditions
+      castlingConditions,
+      botColor
     );
 
     setRepetition(newRepetition);
-    executeMove(EPlayer.black, squares, randStart, randEnd);
+    executeMove(botColor, squares, randStart, randEnd);
   };
+
+  // The bot moves whenever it is its turn: after your move, or at the start when it plays white.
+  useEffect(() => {
+    if (!isBotRunning) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      executeBot(searchDepth, pieces);
+    }, 700);
+
+    return () => clearTimeout(timer);
+  }, [isBotRunning, pieces]);
 
   const handleClick = (idx: number) => {
     let copySquares = pieces.slice();
 
-    if (mated) {
+    if (mated || isBotRunning) {
       return;
     }
 
-    if (source === -1 && !isBotRunning) {
+    if (source === -1) {
       if (copySquares[idx].player !== turn) {
         return;
       }
@@ -155,7 +186,8 @@ const Game: React.FC = () => {
           copySquares,
           idx,
           passantPos,
-          castlingConditions
+          castlingConditions,
+          humanColor
         );
 
         setSource(idx);
@@ -173,7 +205,8 @@ const Game: React.FC = () => {
           copySquares,
           idx,
           passantPos,
-          castlingConditions
+          castlingConditions,
+          humanColor
         );
 
         setSource(idx);
@@ -193,7 +226,8 @@ const Game: React.FC = () => {
             idx,
             source,
             passantPos,
-            castlingConditions
+            castlingConditions,
+            humanColor
           );
 
           setSource(-1);
@@ -202,12 +236,7 @@ const Game: React.FC = () => {
           return;
         }
 
-        executeMove(EPlayer.white, pieces, source, idx);
-
-        const searchDepth = 3;
-        setTimeout(() => {
-          executeBot(searchDepth, pieces);
-        }, 700);
+        executeMove(humanColor, pieces, source, idx);
       }
     }
   };
@@ -222,11 +251,16 @@ const Game: React.FC = () => {
         piecesCollectedByWhite={piecesCollectedByWhite}
         piecesCollectedByBlack={piecesCollectedByBlack}
         reset={reset}
+        flip={() => setFlipped(!flipped)}
+        switchColor={switchColor}
+        humanColor={humanColor}
       />
 
       <Board
         isBotRunning={isBotRunning}
         mated={mated}
+        flipped={flipped}
+        humanColor={humanColor}
         onClick={handleClick}
         statePieces={pieces}
       />

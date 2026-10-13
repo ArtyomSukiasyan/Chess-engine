@@ -3,8 +3,10 @@ import {
   blackPlayer,
   description,
   matchInfo,
+  myBot,
   title,
   whitePlayer,
+  you,
 } from "../constants/info";
 import { EPlayer } from "../models/enums/Player.enum";
 import { IMatchInfo } from "../models/MatchInfo";
@@ -17,8 +19,10 @@ export default function MatchInfo({
   turn,
   piecesCollectedByWhite,
   piecesCollectedByBlack,
+  humanColor,
 }: IMatchInfo) {
   const isWhiteTurn = turn === EPlayer.white;
+  const isHumanWhite = humanColor === EPlayer.white;
 
   return (
     <>
@@ -32,12 +36,12 @@ export default function MatchInfo({
 
       <div className="wrapper">
         <PlayerBox
-          player={whitePlayer}
+          player={`${whitePlayer} ${isHumanWhite ? you : myBot}`}
           pieces={piecesCollectedByWhite}
           isBlack={false}
         />
         <PlayerBox
-          player={blackPlayer}
+          player={`${blackPlayer} ${isHumanWhite ? myBot : you}`}
           pieces={piecesCollectedByBlack}
           isBlack={true}
         />
@@ -52,6 +56,7 @@ export default function MatchInfo({
         castlingConditions={castlingConditions}
         passantPos={passantPos}
         turn={turn}
+        humanColor={humanColor}
       />
     </>
   );

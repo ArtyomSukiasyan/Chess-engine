@@ -1,5 +1,4 @@
 import { ICastlingConditions } from "../../models/CastlingConditions";
-import { EPlayer } from "../../models/enums/Player.enum";
 import { IPiece } from "../../models/Piece";
 import clearCheckHighlight from "./clearCheckHighlight";
 import clearPossibleHighlight from "./clearPossibleHighlight";
@@ -9,9 +8,10 @@ export default function paintPossibleMoves(
   pieces: IPiece[],
   idx: number,
   passantPos: number,
-  castlingConditions: ICastlingConditions
+  castlingConditions: ICastlingConditions,
+  humanColor: string
 ) {
-  pieces = clearCheckHighlight(pieces, EPlayer.white).slice();
+  pieces = clearCheckHighlight(pieces, humanColor).slice();
   pieces = clearPossibleHighlight(pieces);
 
   pieces[idx].highlight = true;

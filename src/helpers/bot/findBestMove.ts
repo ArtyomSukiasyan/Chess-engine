@@ -1,5 +1,6 @@
 import { ICastlingConditions } from "../../models/CastlingConditions";
 import { EPieceAsciis } from "../../models/enums/PieceAsciis.enum";
+import { EPlayer } from "../../models/enums/Player.enum";
 import { IPiece } from "../../models/Piece";
 import makeMove from "../gameLogic/makeMove";
 import minimax from "./minimax";
@@ -14,7 +15,8 @@ export default function findBestMove(
   depth: number,
   starts: number[],
   ends: number[],
-  castlingConditions: ICastlingConditions
+  castlingConditions: ICastlingConditions,
+  botColor: string
 ) {
   let randStart = 100;
   let randEnd = 100;
@@ -41,10 +43,15 @@ export default function findBestMove(
 
     let passantPos = -1;
 
-    const isBlackPawn = testSquares[start].ascii === EPieceAsciis.blackPawn;
-    const isBlackCanEnpassant = start >= 8 && start <= 15 && end - start === 16;
+    // makeMove mutates testSquares, so the moved piece is now on `end`.
+    const isBlack = botColor === EPlayer.black;
+    const botPawn = isBlack ? EPieceAsciis.blackPawn : EPieceAsciis.whitePawn;
+    const isBotPawn = testSquares[end].ascii === botPawn;
+    const pawnRowStart = isBlack ? 8 : 48;
+    const isPawnStart = start >= pawnRowStart && start <= pawnRowStart + 7;
+    const isPawnJump = end - start === (isBlack ? 16 : -16);
 
-    if (isBlackPawn && isBlackCanEnpassant) {
+    if (isBotPawn && isPawnStart && isPawnJump) {
       passantPos = end;
     }
 
@@ -58,7 +65,8 @@ export default function findBestMove(
       ends,
       statePassantPos,
       castlingConditions,
-      passantPos
+      passantPos,
+      botColor
     );
 
     if (boardEval >= bestValue) {

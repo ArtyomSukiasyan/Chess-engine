@@ -10,16 +10,19 @@ export default function paintCheck(
   idx: number,
   source: number,
   passantPos: number,
-  castlingConditions: ICastlingConditions
+  castlingConditions: ICastlingConditions,
+  humanColor: string
 ) {
   pieces[source].highlight = false;
   pieces = clearPossibleHighlight(pieces);
 
-  const isWhiteInCheck = inCheck(EPlayer.white, pieces, passantPos, castlingConditions);
+  const isHumanInCheck = inCheck(humanColor, pieces, passantPos, castlingConditions);
+  const kingASCII =
+    humanColor === EPlayer.white ? EPieceAsciis.whiteKing : EPieceAsciis.blackKing;
 
-  if (idx !== source && isWhiteInCheck) {
+  if (idx !== source && isHumanInCheck) {
     for (let j = 0; j < 64; j++) {
-      if (pieces[j].ascii === EPieceAsciis.whiteKing) {
+      if (pieces[j].ascii === kingASCII) {
         pieces[j].inCheck = true;
 
         break;

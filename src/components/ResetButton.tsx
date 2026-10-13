@@ -7,10 +7,8 @@ export default function ResetButton({
   onClick: MouseEventHandler<HTMLButtonElement>;
 }) {
   return (
-    <div className="button_wrapper">
-      <button className="reset_button" onClick={onClick}>
-        <p className="button_font">{restart}</p>
-      </button>
-    </div>
+    <button className="reset_button" onClick={onClick}>
+      <p className="button_font">{restart}</p>
+    </button>
   );
 }

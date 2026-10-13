@@ -1,4 +1,3 @@
-import { EPlayer } from "../../models/enums/Player.enum";
 import { IPiece } from "../../models/Piece";
 import calcSquareColor from "./calcSquareColor";
 
@@ -7,12 +6,13 @@ export default function getSquareClasses(
   j: number,
   pieces: IPiece[],
   isBotRunning: boolean,
-  mated: boolean
+  mated: boolean,
+  humanColor: string
 ) {
   let squareColor = calcSquareColor(i, j, pieces);
   let squareCursor = "pointer";
 
-  if (pieces[i * 8 + j].player !== EPlayer.white) {
+  if (pieces[i * 8 + j].player !== humanColor) {
     squareCursor = "default";
   }
 

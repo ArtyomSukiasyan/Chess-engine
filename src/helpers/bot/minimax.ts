@@ -5,10 +5,11 @@ import evaluateBlack from "./evaluateBlack";
 import isMoveAvailable from "../gameLogic/isMoveAvailable";
 import makeMove from "../gameLogic/makeMove";
 import { EPieceAsciis } from "../../models/enums/PieceAsciis.enum";
+import getOpponent from "../getOpponent";
 
 export default function minimax(
   depth: number,
-  isBlackPlayer: boolean,
+  isBotTurn: boolean,
   alpha: number,
   beta: number,
   pieces: IPiece[],
@@ -16,20 +17,24 @@ export default function minimax(
   ends: number[],
   statePassantPos: number,
   castlingConditions: ICastlingConditions,
-  passantPos: number
+  passantPos: number,
+  botColor: string
 ) {
   const copySquares = pieces.slice();
   if (depth === 0) {
-    return evaluateBlack(copySquares);
+    // evaluateBlack scores from black's side; the bot maximizes its own score.
+    const evaluation = evaluateBlack(copySquares);
+    return botColor === EPlayer.black ? evaluation : -evaluation;
   }
 
-  let bestValue = isBlackPlayer ? -9999 : 9999;
+  const currentPlayer = isBotTurn ? botColor : getOpponent(botColor);
+  const isBlackPlayer = currentPlayer === EPlayer.black;
+  let bestValue = isBotTurn ? -9999 : 9999;
 
   for (let i = 0; i < 64; i++) {
     const start = starts[i];
 
     const isValidPiece = copySquares[start].ascii !== null;
-    const currentPlayer = isBlackPlayer ? EPlayer.black : EPlayer.white;
     const isSamePlayer = copySquares[start].player === currentPlayer;
 
     const isPlayerPiece = isValidPiece && isSamePlayer;
@@ -78,7 +83,7 @@ export default function minimax(
 
           let value = minimax(
             depth - 1,
-            !isBlackPlayer,
+            !isBotTurn,
             alpha,
             beta,
             testSquares2,
@@ -86,10 +91,11 @@ export default function minimax(
             ends,
             statePassantPos,
             castlingConditions,
-            passant
+            passant,
+            botColor
           );
 
-          if (isBlackPlayer) {
+          if (isBotTurn) {
             if (value > bestValue) {
               bestValue = value;
             }

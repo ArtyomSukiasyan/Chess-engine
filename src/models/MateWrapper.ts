@@ -6,4 +6,5 @@ export interface IMateWrapper {
   passantPos: number;
   castlingConditions: ICastlingConditions;
   turn: string;
+  humanColor: string;
 }

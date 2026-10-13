@@ -8,19 +8,25 @@ export default function Board({
   statePieces,
   isBotRunning,
   mated,
+  flipped,
+  humanColor,
 }: IBoard) {
   const board = [];
 
-  for (let i = 0; i < 8; i++) {
+  // When flipped, rows and columns are drawn in reverse so black is at the bottom.
+  for (let row = 0; row < 8; row++) {
+    const i = flipped ? 7 - row : row;
     const squareRows = [];
 
-    for (let j = 0; j < 8; j++) {
+    for (let col = 0; col < 8; col++) {
+      const j = flipped ? 7 - col : col;
       const { squareColor, squareCursor, pieces } = getSquareClasses(
         i,
         j,
         statePieces,
         isBotRunning,
-        mated
+        mated,
+        humanColor
       );
 
       squareRows.push(
@@ -39,9 +45,13 @@ export default function Board({
 
   return (
     <div className="right_screen">
-      <div className="row_label"> {rowNumbers} </div>
+      <div className="row_label">
+        {flipped ? [...rowNumbers].reverse() : rowNumbers}
+      </div>
       <div className="table"> {board} </div>
-      <div className="col_label"> {colNumbers} </div>
+      <div className="col_label">
+        {flipped ? [...colNumbers].reverse() : colNumbers}
+      </div>
     </div>
   );
 }

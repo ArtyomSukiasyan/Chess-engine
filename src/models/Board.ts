@@ -5,4 +5,6 @@ export interface IBoard {
   statePieces: IPiece[];
   isBotRunning: boolean;
   mated: boolean;
+  flipped: boolean;
+  humanColor: string;
 }

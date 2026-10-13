@@ -10,4 +10,7 @@ export interface ILeftScreen {
   piecesCollectedByWhite: JSX.Element[];
   piecesCollectedByBlack: JSX.Element[];
   reset: MouseEventHandler<HTMLButtonElement>;
+  flip: MouseEventHandler<HTMLButtonElement>;
+  switchColor: MouseEventHandler<HTMLButtonElement>;
+  humanColor: string;
 }
