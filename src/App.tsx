@@ -368,7 +368,7 @@ const Game: React.FC = () => {
   };
 
   return (
-    <>
+    <div className="app">
       <LeftScreen
         pieces={pieces}
         castlingConditions={castlingConditions}
@@ -395,7 +395,7 @@ const Game: React.FC = () => {
         onClick={handleClick}
         statePieces={pieces}
       />
-    </>
+    </div>
   );
 };
 

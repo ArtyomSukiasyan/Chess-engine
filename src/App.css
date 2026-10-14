@@ -361,51 +361,6 @@ html {
   background-color: #ffac2c;
 }
 
-@media screen and (max-width: 1100px) {
-  .right_screen {
-    width: 100%;
-    height: 100vmin;
-    margin-left: 5px;
-  }
-
-  .left_screen {
-    width: 100% !important;
-    height: auto;
-  }
-
-  .row_label {
-    top: calc(50% - 42vmin);
-    left: calc(50% - 52vmin);
-  }
-
-  .col_label {
-    top: calc(50% - 42vmin);
-    left: calc(50% - 42vmin);
-  }
-
-  .table {
-    top: calc(50% - 42vmin);
-    left: calc(50% - 42vmin);
-  }
-
-  .side_box {
-    width: 60%;
-    top: calc(50% - 41vmin);
-    left: 17%;
-    margin: 40 0 20 0;
-  }
-}
-
-@media screen and (max-width: 426px) {
-  .left_screen {
-    width: 100%;
-    font-size: 12px;
-  }
-  .content {
-    padding-bottom: 0;
-  }
-}
-
 .piece {
   display: flex;
   flex: 1 1 auto;
@@ -419,4 +374,221 @@ html {
 
 .piece img {
   max-width: 100%;
+}
+
+/* Coordinates inside the edge squares replace the outer labels on small screens. */
+.square {
+  position: relative;
+}
+
+.coord {
+  display: none;
+  position: absolute;
+  font-size: 2.6vmin;
+  font-weight: bold;
+  line-height: 1;
+  pointer-events: none;
+  color: #b58863;
+}
+
+.black_square .coord,
+.selected_black_square .coord,
+.highlighted_black_square .coord {
+  color: #f0d9b5;
+}
+
+.coord_rank {
+  top: 2px;
+  left: 3px;
+}
+
+.coord_file {
+  bottom: 2px;
+  right: 3px;
+}
+
+/* Phones and tablets: the board comes first and is as big as the screen allows. */
+@media screen and (max-width: 1100px) {
+  body {
+    margin: 0;
+  }
+
+  .app {
+    /* Leave room below the board for the players, status and buttons. */
+    --board: min(100vw, 100vh - 120px);
+    --board: min(100vw, 100dvh - 120px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .right_screen {
+    order: -1;
+    width: auto;
+    height: auto;
+    margin: 0;
+  }
+
+  .row_label,
+  .col_label {
+    display: none;
+  }
+
+  .table {
+    position: static;
+    width: var(--board);
+    height: var(--board);
+  }
+
+  .square {
+    width: calc(var(--board) / 8);
+    height: calc(var(--board) / 8);
+    padding: 0;
+  }
+
+  .piece {
+    padding: 3px;
+  }
+
+  .coord {
+    display: block;
+    z-index: 1;
+    font-size: max(10px, calc(var(--board) / 30));
+  }
+
+  .left_screen {
+    float: none;
+    width: var(--board) !important;
+    height: auto;
+    overflow: visible;
+  }
+
+  .side_box {
+    position: static;
+    width: 100%;
+    margin: 0;
+    padding: 8px 8px 4px;
+    border-radius: 0 0 3px 3px;
+    box-shadow: none;
+  }
+
+  /* The title and headings would push the board out of view. */
+  .side_box .content {
+    display: none;
+  }
+
+  .wrapper {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .player_box {
+    width: 50%;
+    min-height: 0;
+    padding: 4px 8px;
+    box-sizing: border-box;
+  }
+
+  .player_box .medium_font {
+    margin: 4px 0;
+    font-size: 1em;
+  }
+
+  .collected {
+    height: 18px;
+    width: 18px;
+  }
+
+  .highlight_box {
+    width: 50%;
+    height: 4px;
+    padding: 0;
+    margin-bottom: 4px;
+  }
+
+  .mate_wrapper p {
+    margin: 6px 0;
+    font-weight: bold;
+  }
+
+  .mate_wrapper p:empty {
+    display: none;
+  }
+
+  .button_wrapper {
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .reset_button {
+    flex: 1 1 0;
+    min-width: 0;
+    margin: 0;
+    padding: 0 4px;
+  }
+
+  .reset_button p {
+    margin: 10px 0;
+    font-size: 1.1em;
+  }
+
+  .level_select {
+    flex: 1 1 0;
+    justify-content: center;
+    margin: 0;
+  }
+
+  .move_history {
+    margin: 8px 0 4px;
+  }
+
+  .move_history .medium_font {
+    margin: 4px 0;
+  }
+
+  .move_history_empty {
+    margin: 4px 0;
+  }
+
+  .move_list {
+    max-height: 25vh;
+  }
+}
+
+/* Tablets: a little air around the board. */
+@media screen and (min-width: 600px) and (max-width: 1100px) {
+  .app {
+    --board: min(100vw - 48px, 100vh - 280px);
+    --board: min(100vw - 48px, 100dvh - 280px);
+    padding-top: 24px;
+  }
+}
+
+/* Phones held sideways: board as tall as the screen, panel scrolls beside it. */
+@media screen and (max-width: 1100px) and (max-height: 600px) and (orientation: landscape) {
+  .app {
+    --board: 100vh;
+    --board: 100dvh;
+    flex-direction: row;
+    align-items: flex-start;
+    padding-top: 0;
+  }
+
+  .left_screen {
+    flex: 1;
+    width: auto !important;
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
+  }
+
+  .side_box {
+    min-height: 100%;
+    border-radius: 0;
+  }
+
+  .move_list {
+    max-height: none;
+  }
 }

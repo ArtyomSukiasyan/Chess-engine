@@ -6,4 +6,7 @@ export interface ISquare {
   color: string;
   cursor: string;
   onClick: MouseEventHandler<HTMLButtonElement>;
+  /** Coordinates drawn inside the edge squares (only shown on small screens). */
+  rankLabel?: number;
+  fileLabel?: string;
 }

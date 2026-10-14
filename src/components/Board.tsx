@@ -3,6 +3,8 @@ import getSquareClasses from "../helpers/UI/getSquareClasses";
 import { IBoard } from "../models/Board";
 import Square from "./Square";
 
+const FILES = "abcdefgh";
+
 export default function Board({
   onClick,
   statePieces,
@@ -36,6 +38,8 @@ export default function Board({
           color={squareColor}
           cursor={squareCursor}
           onClick={() => onClick(i * 8 + j)}
+          rankLabel={col === 0 ? 8 - i : undefined}
+          fileLabel={row === 7 ? FILES[j] : undefined}
         />
       );
     }
