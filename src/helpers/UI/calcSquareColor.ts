@@ -23,10 +23,10 @@ export default function calcSquareColor(
       : "selected_black_square";
   }
 
+  // A dot on empty squares, a ring around pieces that can be captured.
   if (checkedPiece.possible) {
-    squareColor = isWhiteSquare
-      ? "highlighted_white_square"
-      : "highlighted_black_square";
+    squareColor +=
+      checkedPiece.ascii === null ? " possible_move" : " possible_capture";
   }
 
   if (checkedPiece.ascii !== null && isKing) {
