@@ -1,58 +1,27 @@
 import { ICastlingConditions } from "../../models/CastlingConditions";
 import { IPiece } from "../../models/Piece";
-import isMoveAvailable from "../gameLogic/isMoveAvailable";
-import shuffle from "./shuffle";
+import isMoveAvailable from "./isMoveAvailable";
 
+/** All legal moves of `player`, flattened as [start1, end1, start2, end2, ...]. */
 export default function getMoves(
   pieces: IPiece[],
   passantPos: number,
   castlingConditions: ICastlingConditions,
-  botColor: string
+  player: string
 ) {
-  const { starts, ends } = getStartsAndEnds();
+  const moves: number[] = [];
 
-  const moves = [];
+  for (let start = 0; start < 64; start++) {
+    if (pieces[start].ascii === null || pieces[start].player !== player) {
+      continue;
+    }
 
-  for (let i = 0; i < 64; i++) {
-    const start = starts[i];
-
-    const isValidPiece = pieces[start].ascii !== null;
-    const isBotPiece = isValidPiece && pieces[start].player === botColor;
-
-    if (isBotPiece) {
-      for (let j = 0; j < 64; j++) {
-        const end = ends[j];
-        
-        const isAvailableMove = isMoveAvailable(
-          start,
-          end,
-          pieces,
-          passantPos,
-          castlingConditions
-        );
-
-        if (isAvailableMove) {
-          moves.push(start);
-          moves.push(end);
-        }
+    for (let end = 0; end < 64; end++) {
+      if (isMoveAvailable(start, end, pieces, passantPos, castlingConditions)) {
+        moves.push(start, end);
       }
     }
   }
 
-  return { moves, starts, ends };
-}
-
-function getStartsAndEnds() {
-  let starts = [];
-  let ends = [];
-
-  for (let i = 0; i < 64; i++) {
-    starts.push(i);
-    ends.push(i);
-  }
-
-  starts = shuffle(starts);
-  ends = shuffle(ends);
-
-  return { starts, ends };
+  return moves;
 }

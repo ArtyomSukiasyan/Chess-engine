@@ -1,4 +1,5 @@
 import { ReactElement } from "react";
+import { EPieceAsciis } from "../models/enums/PieceAsciis.enum";
 import { EPlayer } from "../models/enums/Player.enum";
 
 import { PieceIcon } from '../components/PieceIcon';
@@ -16,7 +17,7 @@ export default class Bishop {
     this.highlight = false;
     this.possible = false;
     this.icon = <PieceIcon piece={Pieces.Bishop} isWhite={player === EPlayer.white} />;
-    this.ascii = player === EPlayer.white ? EPlayer.black : EPlayer.black;
+    this.ascii = player === EPlayer.white ? EPieceAsciis.whiteBishop : EPieceAsciis.blackBishop;
   }
 
   canMove(start: number, end: number) {

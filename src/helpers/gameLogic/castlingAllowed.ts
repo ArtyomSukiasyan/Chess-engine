@@ -52,7 +52,7 @@ export default function castlingAllowed(
       ? castlingConditions.rightBlackRookHasMoved
       : castlingConditions.leftBlackRookHasMoved;
 
-  if (isBlackRookHasMoved) {
+  if (player === EPlayer.black && isBlackRookHasMoved) {
     return false;
   }
 
