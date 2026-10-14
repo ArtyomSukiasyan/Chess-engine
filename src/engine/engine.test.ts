@@ -3,7 +3,8 @@ import { defaultCastlingConditions } from "../constants/castlingConditions";
 import initializeBoard from "../helpers/board/initializeBoard";
 import { EPlayer } from "../models/enums/Player.enum";
 import { bookMove, buildBook, buildMainReplies } from "./book";
-import { chooseMove } from "./bot";
+import { chooseMove, chooseUciMove } from "./bot";
+import { replayGame } from "./game";
 import { BOT_LEVELS, BotSettings } from "./levels";
 import {
   appMoveToSan,
@@ -217,5 +218,39 @@ describe("difficulty levels", () => {
       expect(limits[i].maxDepth).toBeGreaterThanOrEqual(limits[i - 1].maxDepth);
       expect(limits[i].randomMoveChance).toBeLessThanOrEqual(limits[i - 1].randomMoveChance);
     }
+  });
+});
+
+describe("replaying online games", () => {
+  it("snapshots a position back into the same plain object", () => {
+    const fen = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -";
+    expect(new Position(fromFen(fen)).snapshot()).toEqual(fromFen(fen));
+  });
+
+  it("follows a game with castling and en passant", () => {
+    const moves = "e2e4 g8f6 e4e5 d7d5 e5d6 e7d6 g1f3 f8e7 f1e2 e8g8 e1g1".split(" ");
+    const positions = replayGame(moves);
+    expect(positions).toHaveLength(moves.length + 1);
+    expect(positions.at(-1)).toEqual(
+      fromFen("rnbq1rk1/ppp1bppp/3p1n2/8/8/5N2/PPPPBPPP/RNBQ1RK1 b - -")
+    );
+  });
+
+  it("keeps an opponent's underpromotion", () => {
+    const positions = replayGame(["e7e8n"], "8/4P3/8/8/8/8/k7/4K3 w - - 0 1");
+    expect(positions.at(-1)).toEqual(fromFen("4N3/8/8/8/8/8/k7/4K3 b - -"));
+  });
+
+  it("rejects illegal moves", () => {
+    expect(() => replayGame(["e2e5"])).toThrow("Illegal move e2e5");
+  });
+
+  it("answers in UCI from a replayed game", () => {
+    const positions = replayGame(["e2e4"]);
+    const move = chooseUciMove(positions.at(-1)!, positions.slice(0, -1), {
+      ...BOT_LEVELS[4].settings,
+      timeLimitMs: 100,
+    });
+    expect(move).toBe("e7e5"); // the Petrov repertoire
   });
 });

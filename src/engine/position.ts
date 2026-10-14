@@ -457,6 +457,18 @@ export class Position {
     return false;
   }
 
+  /** The current position as a plain object (the inverse of the constructor). */
+  snapshot(): BotPosition {
+    const board: number[] = [];
+    for (let i = 0; i < 64; i++) board.push(this.board[to0x88(i)]);
+    return {
+      board,
+      side: this.side,
+      castling: this.castling,
+      enPassant: this.enPassant === -1 ? -1 : to64(this.enPassant),
+    };
+  }
+
   /** All legal moves (slow path, used at the root and by the opening book). */
   legalMoves(): number[] {
     const buffer = new Int32Array(256);

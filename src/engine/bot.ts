@@ -1,5 +1,6 @@
 import { bookMove } from "./book";
 import { BotSettings } from "./levels";
+import { moveToUci } from "./notation";
 import { BotPosition, moveFrom, moveTo, Position, to64 } from "./position";
 import { search } from "./search";
 
@@ -20,8 +21,25 @@ export function chooseMove(
   settings: BotSettings
 ): BotMove | null {
   const position = new Position(current, history);
+  const move = pickMove(position, settings);
+  if (!move) return null;
+  return { start: to64(moveFrom(move)), end: to64(moveTo(move)) };
+}
+
+/** Like `chooseMove`, but answers in UCI ("e2e4", "e7e8q"), or null when there is no legal move. */
+export function chooseUciMove(
+  current: BotPosition,
+  history: BotPosition[],
+  settings: BotSettings
+): string | null {
+  const position = new Position(current, history);
+  const move = pickMove(position, settings);
+  return move ? moveToUci(move) : null;
+}
+
+function pickMove(position: Position, settings: BotSettings): number {
   const legal = position.legalMoves();
-  if (legal.length === 0) return null;
+  if (legal.length === 0) return 0;
 
   let move = 0;
   if (Math.random() < settings.randomMoveChance) {
@@ -29,6 +47,5 @@ export function chooseMove(
   }
   if (!move && settings.useBook) move = bookMove(position);
   if (!move) move = search(position, settings.timeLimitMs, settings.maxDepth).move;
-  if (!move) return null;
-  return { start: to64(moveFrom(move)), end: to64(moveTo(move)) };
+  return move;
 }
