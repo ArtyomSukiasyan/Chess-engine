@@ -4,6 +4,8 @@ import {
   BLACK_KING_SIDE,
   BLACK_QUEEN_SIDE,
   BotPosition,
+  FLAG_CASTLE,
+  FLAG_EN_PASSANT,
   FLAG_PROMOTION,
   KING,
   KNIGHT,
@@ -68,4 +70,52 @@ export function findUciMove(position: Position, uci: string): number {
   const from = to0x88(parseSquare(uci.slice(0, 2)));
   const to = to0x88(parseSquare(uci.slice(2, 4)));
   return position.legalMoves().find((m) => moveFrom(m) === from && moveTo(m) === to) ?? 0;
+}
+
+const SAN_LETTERS = ["", "", "N", "B", "R", "Q", "K"];
+
+/** A legal move in standard algebraic notation ("Nf3", "exd5", "O-O", "e8=Q+"). */
+export function moveToSan(position: Position, move: number): string {
+  const from = moveFrom(move);
+  const to = moveTo(move);
+  const flags = moveFlags(move);
+  const type = position.board[from] & 7;
+  const isCapture = position.board[to] !== 0 || (flags & FLAG_EN_PASSANT) !== 0;
+  const target = squareName(to64(to));
+
+  let san: string;
+  if (flags & FLAG_CASTLE) {
+    san = (to & 7) === 6 ? "O-O" : "O-O-O";
+  } else if (type === PAWN) {
+    san = (isCapture ? squareName(to64(from))[0] + "x" : "") + target;
+    if (flags & FLAG_PROMOTION) san += "=Q";
+  } else {
+    // Name the file, the rank or both when another piece of the same kind can go there too.
+    const rivals = position
+      .legalMoves()
+      .filter((m) => m !== move && moveTo(m) === to && position.board[moveFrom(m)] === position.board[from])
+      .map((m) => squareName(to64(moveFrom(m))));
+    const name = squareName(to64(from));
+    let disambiguation = "";
+    if (rivals.length > 0) {
+      if (rivals.every((sq) => sq[0] !== name[0])) disambiguation = name[0];
+      else if (rivals.every((sq) => sq[1] !== name[1])) disambiguation = name[1];
+      else disambiguation = name;
+    }
+    san = SAN_LETTERS[type] + disambiguation + (isCapture ? "x" : "") + target;
+  }
+
+  position.make(move);
+  if (position.inCheck()) san += position.legalMoves().length === 0 ? "#" : "+";
+  position.unmake();
+  return san;
+}
+
+/** The app's move (square indexes, 0 = a8) in standard algebraic notation, or "" if illegal. */
+export function appMoveToSan(before: BotPosition, start: number, end: number): string {
+  const position = new Position(before);
+  const move = position
+    .legalMoves()
+    .find((m) => to64(moveFrom(m)) === start && to64(moveTo(m)) === end);
+  return move ? moveToSan(position, move) : "";
 }

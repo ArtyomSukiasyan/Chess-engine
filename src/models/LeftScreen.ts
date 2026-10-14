@@ -13,4 +13,10 @@ export interface ILeftScreen {
   flip: MouseEventHandler<HTMLButtonElement>;
   switchColor: MouseEventHandler<HTMLButtonElement>;
   humanColor: string;
+  undo: () => void;
+  canUndo: boolean;
+  /** The game's moves in standard algebraic notation. */
+  moves: string[];
+  level: number;
+  changeLevel: (level: number) => void;
 }

@@ -176,6 +176,59 @@ html {
   transform: translateY(1px);
 }
 
+.reset_button:disabled {
+  background-color: #8fb8a6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.level_select {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
+  font-size: 0.8em;
+}
+
+.level_select select {
+  font-family: "Raleway", sans-serif;
+  font-size: 1.1em;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 5px;
+  background-color: #deeaee;
+  color: #242424;
+  cursor: pointer;
+}
+
+.move_history {
+  margin: 15px 20px 15px;
+}
+
+.move_history_empty {
+  opacity: 0.7;
+}
+
+.move_list {
+  max-height: 20vh;
+  overflow-y: auto;
+  margin: 0;
+  padding: 6px 0 6px 2.5em;
+  background-color: #deeaee;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 1.1em;
+}
+
+.move_list li {
+  padding: 2px 0;
+}
+
+.move {
+  display: inline-block;
+  min-width: 5em;
+}
+
 .table {
   position: absolute;
   top: calc(50% - 42vmin);

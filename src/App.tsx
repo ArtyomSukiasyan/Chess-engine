@@ -19,15 +19,62 @@ import { toBotPosition } from "./engine/fromApp";
 import { BotPosition } from "./engine/position";
 import { BotMove } from "./engine/bot";
 import type { BotRequest, BotResponse } from "./engine/bot.worker";
+import { BOT_LEVELS, DEFAULT_LEVEL } from "./engine/levels";
+import { appMoveToSan } from "./engine/notation";
+import { ICastlingConditions } from "./models/CastlingConditions";
 
-/** How long the bot may think per move. */
-const BOT_TIME_MS = 1500;
 /** The bot never answers faster than this, so its move is easy to follow. */
 const MIN_BOT_DELAY_MS = 200;
+const LEVEL_STORAGE_KEY = "chess-bot-level";
 
-const startHistory = () => [
-  toBotPosition(initializeBoard(), EPlayer.white, defaultCastlingConditions, -1),
-];
+/** Everything needed to go back to a position of the game. */
+interface GameSnapshot {
+  pieces: IPiece[];
+  turn: string;
+  castlingConditions: ICastlingConditions;
+  passantPos: number;
+  piecesCollectedByWhite: JSX.Element[];
+  piecesCollectedByBlack: JSX.Element[];
+  mated: boolean;
+  position: BotPosition;
+  /** The move that led to this position (none for the starting position). */
+  move?: { start: number; end: number; san: string };
+}
+
+const startSnapshot = (): GameSnapshot => ({
+  pieces: initializeBoard(),
+  turn: EPlayer.white,
+  castlingConditions: defaultCastlingConditions,
+  passantPos: -1,
+  piecesCollectedByWhite: [],
+  piecesCollectedByBlack: [],
+  mated: false,
+  position: toBotPosition(initializeBoard(), EPlayer.white, defaultCastlingConditions, -1),
+});
+
+/**
+ * Fresh copies of a snapshot's pieces: the game mutates piece objects (highlights, check marks),
+ * so the stored ones may carry flags from later positions.
+ */
+const restorePieces = (snapshot: GameSnapshot) =>
+  snapshot.pieces.map((piece, idx) => {
+    const copy: IPiece = Object.assign(Object.create(Object.getPrototypeOf(piece)), piece);
+    copy.highlight = idx === snapshot.move?.start || idx === snapshot.move?.end;
+    copy.possible = false;
+    copy.inCheck = false;
+    copy.checked = false;
+    return copy;
+  });
+
+const loadLevel = () => {
+  try {
+    const stored = localStorage.getItem(LEVEL_STORAGE_KEY);
+    const level = Number(stored);
+    return stored !== null && BOT_LEVELS[level] ? level : DEFAULT_LEVEL;
+  } catch {
+    return DEFAULT_LEVEL;
+  }
+};
 
 const Game: React.FC = () => {
   const [pieces, setPieces] = useState<IPiece[]>(initializeBoard());
@@ -47,22 +94,48 @@ const Game: React.FC = () => {
   const [flipped, setFlipped] = useState<boolean>(false);
   const [humanColor, setHumanColor] = useState<string>(EPlayer.white);
   /** Every position of the game so far (the last one is the current position). */
-  const [positionHistory, setPositionHistory] =
-    useState<BotPosition[]>(startHistory);
+  const [history, setHistory] = useState<GameSnapshot[]>(() => [startSnapshot()]);
+  const [level, setLevel] = useState<number>(loadLevel);
 
   const botColor = getOpponent(humanColor);
   const isBotRunning = turn === botColor && !mated;
 
-  const reset = () => {
-    setPieces(initializeBoard());
+  const restore = (snapshots: GameSnapshot[]) => {
+    const snapshot = snapshots[snapshots.length - 1];
+
+    setPieces(restorePieces(snapshot));
     setSource(-1);
-    setTurn(EPlayer.white);
-    setPositionHistory(startHistory());
-    setCastlingConditions(defaultCastlingConditions);
-    setPassantPos(-1);
-    setPiecesCollectedByWhite([]);
-    setPiecesCollectedByBlack([]);
-    setMated(false);
+    setTurn(snapshot.turn);
+    setHistory(snapshots);
+    setCastlingConditions(snapshot.castlingConditions);
+    setPassantPos(snapshot.passantPos);
+    setPiecesCollectedByWhite(snapshot.piecesCollectedByWhite);
+    setPiecesCollectedByBlack(snapshot.piecesCollectedByBlack);
+    setMated(snapshot.mated);
+  };
+
+  const reset = () => restore([startSnapshot()]);
+
+  // Undo goes back to your previous turn: it takes back the bot's reply (if any) and your move.
+  let undoTarget = history.length - 2;
+  while (undoTarget >= 0 && history[undoTarget].turn !== humanColor) {
+    undoTarget--;
+  }
+
+  const undo = () => {
+    if (undoTarget >= 0) {
+      restore(history.slice(0, undoTarget + 1));
+    }
+  };
+
+  const changeLevel = (newLevel: number) => {
+    setLevel(newLevel);
+
+    try {
+      localStorage.setItem(LEVEL_STORAGE_KEY, String(newLevel));
+    } catch {
+      // The level just won't be remembered.
+    }
   };
 
   const switchColor = () => {
@@ -118,26 +191,35 @@ const Game: React.FC = () => {
       castlingConditions
     );
 
+    const nextTurn = getOpponent(player);
+    const isMated = checkMated || staleMated;
+    const san = appMoveToSan(history[history.length - 1].position, start, end);
+    const collectedByWhite =
+      player === EPlayer.white ? collection : piecesCollectedByWhite;
+    const collectedByBlack =
+      player === EPlayer.black ? collection : piecesCollectedByBlack;
+
     setPassantPos(passant);
     setPieces(updatedSquares);
     setSource(-1);
-    setMated(checkMated || staleMated);
-    setTurn(getOpponent(player));
-    setPositionHistory([
-      ...positionHistory,
-      toBotPosition(
-        updatedSquares,
-        getOpponent(player),
-        nextCastlingConditions,
-        passant
-      ),
+    setMated(isMated);
+    setTurn(nextTurn);
+    setPiecesCollectedByWhite(collectedByWhite);
+    setPiecesCollectedByBlack(collectedByBlack);
+    setHistory([
+      ...history,
+      {
+        pieces: updatedSquares.slice(),
+        turn: nextTurn,
+        castlingConditions: nextCastlingConditions,
+        passantPos: passant,
+        piecesCollectedByWhite: collectedByWhite,
+        piecesCollectedByBlack: collectedByBlack,
+        mated: isMated,
+        position: toBotPosition(updatedSquares, nextTurn, nextCastlingConditions, passant),
+        move: { start, end, san },
+      },
     ]);
-
-    if (player === EPlayer.black) {
-      setPiecesCollectedByBlack(collection);
-    } else {
-      setPiecesCollectedByWhite(collection);
-    }
   };
 
   const applyBotMove = (move: BotMove | null) => {
@@ -205,13 +287,13 @@ const Game: React.FC = () => {
     const request: BotRequest = {
       id,
       position: toBotPosition(pieces, botColor, castlingConditions, passantPos),
-      history: positionHistory.slice(0, -1),
-      timeLimitMs: BOT_TIME_MS,
+      history: history.slice(0, -1).map((snapshot) => snapshot.position),
+      settings: BOT_LEVELS[level].settings,
     };
 
     requestTime.current = Date.now();
     workerRef.current?.postMessage(request);
-  }, [isBotRunning, pieces]);
+  }, [isBotRunning, pieces, level]);
 
   const handleClick = (idx: number) => {
     let copySquares = pieces.slice();
@@ -298,6 +380,11 @@ const Game: React.FC = () => {
         flip={() => setFlipped(!flipped)}
         switchColor={switchColor}
         humanColor={humanColor}
+        undo={undo}
+        canUndo={undoTarget >= 0}
+        moves={history.slice(1).map((snapshot) => snapshot.move?.san ?? "")}
+        level={level}
+        changeLevel={changeLevel}
       />
 
       <Board

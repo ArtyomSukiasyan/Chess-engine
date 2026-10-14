@@ -4,10 +4,29 @@ import initializeBoard from "../helpers/board/initializeBoard";
 import { EPlayer } from "../models/enums/Player.enum";
 import { buildBook } from "./book";
 import { chooseMove } from "./bot";
-import { findUciMove, fromFen, moveToUci, parseSquare, squareName, startPosition } from "./notation";
+import { BOT_LEVELS, BotSettings } from "./levels";
+import {
+  appMoveToSan,
+  findUciMove,
+  fromFen,
+  moveToSan,
+  moveToUci,
+  parseSquare,
+  squareName,
+  startPosition,
+} from "./notation";
 import { toBotPosition } from "./fromApp";
 import { BotPosition, moveFrom, moveTo, Position, to64 } from "./position";
 import { isMateScore, MATE, search } from "./search";
+
+const settings = (timeLimitMs: number): BotSettings => ({
+  timeLimitMs,
+  maxDepth: 64,
+  useBook: true,
+  randomMoveChance: 0,
+});
+
+const START_FEN_FOR_SAN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 function perft(position: Position, depth: number): number {
   if (depth === 0) return 1;
@@ -111,14 +130,14 @@ describe("integration with the app", () => {
   });
 
   it("opens with a book move, not a knight hop", () => {
-    const move = chooseMove(startPosition(), [], 500)!;
+    const move = chooseMove(startPosition(), [], settings(500))!;
     // e4, d4 or c4.
     expect([52, 51, 50]).toContain(move.start);
   });
 
   it("still finds a move when the position has already repeated", () => {
     const start = fromFen("8/8/8/4k3/8/8/8/3QK3 w - -");
-    expect(chooseMove(start, [start, start], 300)).not.toBeNull();
+    expect(chooseMove(start, [start, start], settings(300))).not.toBeNull();
   });
 });
 
@@ -133,5 +152,52 @@ describe("notation", () => {
     const position = fromFen("4k3/8/8/3pP3/8/8/8/4K3 w - d6 0 1");
     expect(position.enPassant).toBe(parseSquare("d6"));
     expect(squareName(position.enPassant)).toBe("d6");
+  });
+
+  const san = (fen: string, uci: string) => {
+    const position = new Position(fromFen(fen));
+    return moveToSan(position, findUciMove(position, uci));
+  };
+
+  it("writes moves in standard algebraic notation", () => {
+    expect(san(START_FEN_FOR_SAN, "g1f3")).toBe("Nf3");
+    expect(san(START_FEN_FOR_SAN, "e2e4")).toBe("e4");
+    expect(san("4k3/8/8/3p4/4P3/8/8/4K3 w - -", "e4d5")).toBe("exd5");
+    expect(san("4k3/8/8/3pP3/8/8/8/4K3 w - d6", "e5d6")).toBe("exd6");
+    expect(san("r3k2r/8/8/8/8/8/8/R3K2R w KQkq -", "e1g1")).toBe("O-O");
+    expect(san("r3k2r/8/8/8/8/8/8/R3K2R b KQkq -", "e8c8")).toBe("O-O-O");
+    expect(san("8/4P3/8/8/8/8/k7/4K3 w - -", "e7e8q")).toBe("e8=Q");
+    expect(san("6k1/5ppp/8/8/8/8/8/R5K1 w - -", "a1a8")).toBe("Ra8#");
+  });
+
+  it("disambiguates moves by file, rank or square", () => {
+    expect(san("4k3/8/8/8/8/8/8/R4RK1 w - -", "a1d1")).toBe("Rad1");
+    expect(san("4k3/R7/8/8/8/8/8/R3K3 w - -", "a1a4")).toBe("R1a4");
+    expect(san("4k3/8/8/8/Q2Q4/8/8/Q5K1 w - -", "a4d1")).toBe("Qa4d1");
+  });
+
+  it("converts the app's moves", () => {
+    expect(appMoveToSan(startPosition(), parseSquare("e2"), parseSquare("e4"))).toBe("e4");
+    expect(appMoveToSan(startPosition(), parseSquare("e2"), parseSquare("e5"))).toBe("");
+  });
+});
+
+describe("difficulty levels", () => {
+  it("always finds a legal move, on every level", () => {
+    const position = new Position(startPosition());
+    const legal = position.legalMoves().map((m) => `${to64(moveFrom(m))}-${to64(moveTo(m))}`);
+    for (const level of BOT_LEVELS) {
+      const move = chooseMove(startPosition(), [], { ...level.settings, timeLimitMs: 50 })!;
+      expect(legal).toContain(`${move.start}-${move.end}`);
+    }
+  });
+
+  it("gets stronger from level to level", () => {
+    const limits = BOT_LEVELS.map((level) => level.settings);
+    for (let i = 1; i < limits.length; i++) {
+      expect(limits[i].timeLimitMs).toBeGreaterThanOrEqual(limits[i - 1].timeLimitMs);
+      expect(limits[i].maxDepth).toBeGreaterThanOrEqual(limits[i - 1].maxDepth);
+      expect(limits[i].randomMoveChance).toBeLessThanOrEqual(limits[i - 1].randomMoveChance);
+    }
   });
 });
