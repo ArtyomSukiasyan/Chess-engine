@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { defaultCastlingConditions } from "../constants/castlingConditions";
 import initializeBoard from "../helpers/board/initializeBoard";
 import { EPlayer } from "../models/enums/Player.enum";
-import { buildBook } from "./book";
+import { bookMove, buildBook, buildMainReplies } from "./book";
 import { chooseMove } from "./bot";
 import { BOT_LEVELS, BotSettings } from "./levels";
 import {
@@ -133,6 +133,24 @@ describe("integration with the app", () => {
     const move = chooseMove(startPosition(), [], settings(500))!;
     // e4, d4 or c4.
     expect([52, 51, 50]).toContain(move.start);
+  });
+
+  it("knows the Petrov defence", () => {
+    const position = new Position(startPosition());
+    for (const uci of ["e2e4", "e7e5", "g1f3"]) position.make(findUciMove(position, uci));
+    const replies = buildBook().get(`${position.hashLo}:${position.hashHi}`)!.map(moveToUci);
+    expect(replies).toEqual(expect.arrayContaining(["b8c6", "g8f6"]));
+  });
+
+  it("always answers 1.e4 e5 2.Nf3 with the Petrov as black", () => {
+    expect(() => buildMainReplies()).not.toThrow();
+    const position = new Position(startPosition());
+    const play = (uci: string) => position.make(findUciMove(position, uci));
+    play("e2e4");
+    for (let i = 0; i < 20; i++) expect(moveToUci(bookMove(position))).toBe("e7e5");
+    play("e7e5");
+    play("g1f3");
+    for (let i = 0; i < 20; i++) expect(moveToUci(bookMove(position))).toBe("g8f6");
   });
 
   it("still finds a move when the position has already repeated", () => {
