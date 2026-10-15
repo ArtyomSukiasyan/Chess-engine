@@ -26,3 +26,21 @@ the default, Hard, thinks 1.5 s per move and usually reaches 8-10 plies.
 - npm test (engine tests)
 
 Application uses PORT 5173
+
+## Lichess bot
+`lichess/bot.ts` plays the engine on Lichess (Expert level) through the Bot API.
+It needs a BOT account and an API token with the `bot:play` scope, in `.env`:
+
+    LICHESS_TOKEN=lip_...
+
+- `npm run lichess -- upgrade` turns a fresh account (no games played) into a BOT account. This cannot be undone.
+- `npm run lichess` runs the bot locally.
+
+### On a server (Docker)
+    git clone https://github.com/ArtyomSukiasyan/Chess-engine.git
+    cd Chess-engine
+    echo "LICHESS_TOKEN=lip_..." > .env
+    docker compose up -d --build
+
+Docker restarts the bot after crashes and reboots. `docker compose logs -f` shows its games;
+after `git pull`, run `docker compose up -d --build` again to update it.
